@@ -7,7 +7,8 @@ c.execute("""CREATE TABLE products (
     price real,
     cost real,
     profit real,
-    quantity integer
+    quantity integer,
+    bar_code text
 )""")
 
 conn.commit()
