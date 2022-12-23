@@ -1,14 +1,14 @@
 import sqlite3
-conn = sqlite3.connect('product.db')
+conn = sqlite3.connect('database.db')
 #c = sqlite3.connect(':memory:') # database in memory
 c = conn.cursor()
-c.execute("""CREATE TABLE products (
-    name text,
-    price real,
-    cost real,
-    profit real,
-    quantity integer,
-    bar_code text
+c.execute("""CREATE TABLE items (
+    name BLOB,
+    price BLOB,
+    cost BLOB,
+    profit BLOB,
+    quantity BLOB,
+    bar_code BLOB
 )""")
 
 conn.commit()

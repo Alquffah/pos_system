@@ -1,34 +1,45 @@
+import tkinter as tk
 import sqlite3
 
-#c = sqlite3.connect(':memory:') # database in memory
-class Product:
-    db_name = 'product.db'
-    def __init__(self, name, sale, cost, qua, barcode):
-        self.name = name
-        self.sale = sale
-        self.cost = cost
-        self.qua = qua
-        self.barcode = barcode
+# Create the main window
+window = tk.Tk()
 
-    def profit(self):
-        return self.sale - self.cost
+# Set the window title
+window.title("My Tkinter Window")
 
-    def qua_edit(self, num):
-        self.qua += num
+# Create a frame to hold the input boxes
+frame = tk.Frame(window)
+frame.pack()
 
-    def run_query(self, query, parameters = ()):
-        with sqlite3.connect(self.db_name) as conn:
-            cursor = conn.cursor()
-            result = cursor.execute(query, parameters)
-            conn.commit()
-        return result
+# Create the input boxes
+input_boxes = []
+for i in range(6):
+    input_box = tk.Entry(frame)
+    input_box.pack(side="left")
+    input_boxes.append(input_box)
+print(input_boxes)
+# Define a function to store the data in the database
+def store_data():
+    # Connect to the database
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
 
-    def add_item(self):
-        query = "INSERT INTO products (name, price, cost, profit, quantity, bar_code) VALUES (?,?,?,?,?,?)"
-        parameters = (p1.name, p1.sale, p1.cost, p1.profit(), p1.qua, p1.barcode)
-        self.run_query(query, parameters)
+    # Create a table to store the data
+    c.execute("CREATE TABLE IF NOT EXISTS data (input1 text, input2 text, input3 text, input4 text, input5 text, input6 text)")
 
+    # Get the data from the input boxes
+    data = [input_box.get() for input_box in input_boxes]
 
-p1 = Product('cleaner', 6, 4, 12, 123456789012)
-#p1.qua_edit(3)
-p1.add_item()
+    # Insert the data into the table
+    c.execute("INSERT INTO data VALUES (?, ?, ?, ?, ?, ?)", data)
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+# Create a button to store the data
+button = tk.Button(window, text="Store Data", command=store_data)
+button.pack()
+
+# Run the main loop to display the window
+window.mainloop()
