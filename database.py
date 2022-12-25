@@ -28,6 +28,24 @@ class Product:
         parameters = (self.name, self.sale, self.cost, self.profit, self.qua, self.barcode)
         self.run_query(query, parameters)
 
+
+def delete_item(id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("DELETE from items WHERE oid = (?)", [id])
+    conn.commit()
+    conn.close()
+
+
+def records():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT *, oid FROM items")
+    result = c.fetchall()
+    conn.commit()
+    conn.close()
+    return result       
+
 """
 p1 = Product('cleaner', 6, 4, 2, 12, 123456789012)
 #p1.qua_edit(3)

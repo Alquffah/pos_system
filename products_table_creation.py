@@ -3,12 +3,12 @@ conn = sqlite3.connect('database.db')
 #c = sqlite3.connect(':memory:') # database in memory
 c = conn.cursor()
 c.execute("""CREATE TABLE items (
-    name BLOB,
-    price BLOB,
-    cost BLOB,
-    profit BLOB,
-    quantity BLOB,
-    bar_code BLOB
+    name TEXT,
+    price REAL,
+    cost REAL,
+    profit REAL,
+    quantity INTEGER,
+    bar_code TEXT
 )""")
 
 conn.commit()
