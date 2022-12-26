@@ -73,7 +73,7 @@ def store_data():
     global item_name_input, item_cost_input, item_sale_input, item_profit_input, item_qua_input, item_barcode_input
     database.Product(item_name_input.get(), item_cost_input.get(), item_sale_input.get(), item_profit_input.get(), item_qua_input.get(), item_barcode_input.get()).add_item()
     message = "Added " + str(item_name_input.get()) + " to the database"
-    ttk.Label(tab1, text =message).grid(row = 2, column= 2, columnspan = 5)
+    ttk.Label(tab1, text =message).grid(row = 2, column= 3, columnspan = 5)
     show_database()
 
 submit_button = ttk.Button(tab1, text = "Add", command=store_data)
@@ -135,8 +135,18 @@ selected_item_id = None
 
 def selectItem(a):
     global selected_item_id
+    
     curItem = data_tree.focus()
     selected_item_id = data_tree.item(curItem)["values"][6]
+
+    name_var.set(data_tree.item(curItem)["values"][0])
+    cost_var.set(data_tree.item(curItem)["values"][1])
+    sale_var.set(data_tree.item(curItem)["values"][2])
+    #item_profit_input = data_tree.item(curItem)["values"][3]
+    qua_var.set(data_tree.item(curItem)["values"][4])
+    barcode_var.set(data_tree.item(curItem)["values"][5])
+
+    print(item_name_input)
 
 data_tree.bind('<ButtonRelease-1>', selectItem)
 
@@ -149,15 +159,25 @@ def delete_item1():
 delete_button = ttk.Button(tab1, text = "Delete", command=delete_item1)
 delete_button.grid(row = 5, column= 0, pady = 10)
 
+def edit_item1():
+    global item_name_input, item_cost_input, item_sale_input, item_profit_input, item_qua_input, item_barcode_input
 
-edit_button = ttk.Button(tab1, text = "Edit")
+    database.edit_item(item_name_input.get(), item_cost_input.get(), item_sale_input.get(), item_profit_input.get(), item_qua_input.get(), item_barcode_input.get(), selected_item_id)
+
+    show_database()
+
+edit_button = ttk.Button(tab1, text = "Submit Edit", command=edit_item1)
+edit_button.grid(row = 2, column= 2, pady = 10)
+
+def item_history_window():
+
+    newWindow = tk.Toplevel(root)
+
+    newWindow.title("Item History")
+ 
+    newWindow.geometry("550x200")
+
+edit_button = ttk.Button(tab1, text = "View history", command=item_history_window)
 edit_button.grid(row = 5, column= 1, pady = 10)
 
-ttk.Label(tab2,
-          text ="Lets dive into the\
-          world of computers").grid(column = 0,
-                                    row = 0, 
-                                    padx = 30,
-                                    pady = 30)
-  
 root.mainloop()

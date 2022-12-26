@@ -29,6 +29,13 @@ class Product:
         self.run_query(query, parameters)
 
 
+def edit_item(name, price, cost, profit, quantity, bar_code, id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("UPDATE items SET name = ?, price = ?, cost = ?, profit = ?, quantity = ?, bar_code = ? WHERE oid = ?", (str(name), float(price), float(cost), float(profit), int(quantity), str(bar_code),str(id)))
+    conn.commit()
+    conn.close()
+
 def delete_item(id):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
