@@ -33,27 +33,70 @@ class cashier(ttk.Frame):
         #ttk.Label(self, text ="Item Name").grid(row = 1, column= 0, padx = 10, pady=20)
 
         # buttons
-        add_button = ttk.Button(self, text = "Add", command=self.add_item)
+        add_button = ttk.Button(self, text = "Add", command=self.search_barcode)
         add_button.grid(row = 1, column= 10, pady = 10)
+
+        delete_button = ttk.Button(self, text = "Delete", command=self.delete_item)
+        delete_button.grid(row = 2, column= 9, pady = 10)
 
         # entry boxes
         self.barcode_entry = ttk.Entry(self, width = 15)
         self.barcode_entry.grid(row = 1, column= 9, padx = 10)
 
-        self.total_transaction = ttk.Entry(self, width = 20)
+        self.total_transaction_var = tk.DoubleVar()
+        self.total_transaction = ttk.Entry(self, width = 20, textvariable = self.total_transaction_var, state="readonly")
         self.total_transaction.grid(row = 9, column= 7, padx = 10, pady=10)
-
-    def add_item(self):
-        barcode = self.barcode_entry.get()
-        record = database.table().find_item(barcode)
-        #print(record[0][0])
-        self.data_tree.insert(parent='', index='end', text='', values=(record[0][0], record[0][2], self.quantity_manager(), record[0][2] * self.quantity_manager()))
+        
+        # update the total_transaction entry box
+        self.total_transaction_var.set(self.transaction_total())
         #self.show_database()
 
-    def quantity_manager(self):
-        qua = 1
+    def delete_item(self):
+        self.data_tree.delete(self.data_tree.selection()[0]) 
+        # update the total_transaction entry box
+        self.total_transaction_var.set(self.transaction_total())
 
-        return qua
+    def search_barcode(self):
+        # if the data_tree is empty, then add the item
+        if not self.data_tree.get_children():
+            self.add_item()
+        # else, search the data_tree for the item by the barcode number
+        else:  
+            for child in self.data_tree.get_children():
+                # for every row in the data_tree, compare if the barcode matches with the barcode from the entry box 
+                if str(self.barcode_entry.get()) == str(self.data_tree.item(child)['values'][4]):
+                    # if true the copy the old (name, price, barcode), increase the quantity by 1 and adjust the total
+                    old_name = self.data_tree.item(child)['values'][0]
+                    old_price = self.data_tree.item(child)['values'][1]
+                    new_qua = self.data_tree.item(child)['values'][2] + 1
+                    new_total = float(old_price) * new_qua
+                    old_barcode = self.data_tree.item(child)['values'][4]
+                    # insert the adjusted values into the data_tree so it refreshes automatically
+                    self.data_tree.item(child, text='', values=(old_name, old_price, new_qua, new_total, old_barcode))
+                    # update the total_transaction entry box
+                    self.total_transaction_var.set(self.transaction_total())
+                    return
+            # if the search fails to find a matching barcode then add the item to the data_tree
+            self.add_item()
+        self.total_transaction_var.set(self.transaction_total())
+
+
+    def add_item(self):
+        # get the barcode number from the entry box
+        barcode = self.barcode_entry.get()
+        # find the item in the database that corresponds to the barcode
+        record = database.table().find_item(barcode)
+        # add the item to the data tree
+        self.data_tree.insert(parent='', index='end', text='', values=(record[0][0], record[0][2], 1, record[0][2], barcode))
+        
+
+    def transaction_total(self, item=""):
+        sum = 0.0
+        for row in self.data_tree.get_children(item):
+            sum += float(self.data_tree.item(row)['values'][3])
+
+        return sum
+
     def show_database(self):
         pass
         #self.data_tree.delete(*self.data_tree.get_children())
@@ -65,12 +108,13 @@ class cashier(ttk.Frame):
     def create_data_tree(self):
         #Treeview in the Database view
         self.data_tree = ttk.Treeview(self, height=10)
-        self.data_tree["columns"] = ("name", "Price", "Quantity", "Total")
+        self.data_tree["columns"] = ("name", "Price", "Quantity", "Total", "barcode")
         self.data_tree.column("#0", width = 0)
         self.data_tree.column("name", width = 150)
         self.data_tree.column("Price", width = 60)
         self.data_tree.column("Quantity", width = 60)
         self.data_tree.column("Total", width = 150)
+        self.data_tree.column("barcode", width = 0)
         
 
         self.data_tree.heading("name", text = "Name")
