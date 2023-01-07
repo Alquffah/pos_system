@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import tkinter as tk                    
 from tkinter import ttk
 import database
@@ -30,6 +31,10 @@ class cashier(ttk.Frame):
         # Labels in the Database tab
         ttk.Label(self, text ="Currant Transaction").grid(row = 0, column= 0, columnspan = 8, pady=20)
         ttk.Label(self, text ="Total").grid(row = 9, column= 6, pady=20)
+        self.barcode_not_found = ttk.Label(self, text ="")
+        self.barcode_not_found.grid(row = 1, column= 11, pady=5)
+        self.chash_handed_back_lbl = ttk.Label(self, text ="")
+        self.chash_handed_back_lbl.grid(row = 11, column = 6, columnspan = 2, pady = 5)
         #ttk.Label(self, text ="Item Name").grid(row = 1, column= 0, padx = 10, pady=20)
 
         # buttons
@@ -39,14 +44,21 @@ class cashier(ttk.Frame):
         delete_button = ttk.Button(self, text = "Delete", command=self.delete_item)
         delete_button.grid(row = 2, column= 9, pady = 10)
 
+        cashout_button = ttk.Button(self, text = "Cashout", command=self.cashout)
+        cashout_button.grid(row = 10, column= 6, pady = 10)
+
         # entry boxes
         self.barcode_entry = ttk.Entry(self, width = 15)
         self.barcode_entry.grid(row = 1, column= 9, padx = 10)
 
         self.total_transaction_var = tk.DoubleVar()
+        self.customer_cash_var = tk.DoubleVar()
         self.total_transaction = ttk.Entry(self, width = 20, textvariable = self.total_transaction_var, state="readonly")
         self.total_transaction.grid(row = 9, column= 7, padx = 10, pady=10)
-        
+
+        self.total_transaction = ttk.Entry(self, width = 20, textvariable = self.customer_cash_var)
+        self.total_transaction.grid(row = 10, column= 7, padx = 10, pady=10)
+
         # update the total_transaction entry box
         self.total_transaction_var.set(self.transaction_total())
         #self.show_database()
@@ -87,15 +99,25 @@ class cashier(ttk.Frame):
         # find the item in the database that corresponds to the barcode
         record = database.table().find_item(barcode)
         # add the item to the data tree
-        self.data_tree.insert(parent='', index='end', text='', values=(record[0][0], record[0][2], 1, record[0][2], barcode))
-        
-
+        # if the barcode is not found, the database.table.find_item function will return an empty list
+        if record:
+            self.data_tree.insert(parent='', index='end', text='', values=(record[0][0], record[0][2], 1, record[0][2], barcode))
+        else:
+            self.barcode_not_found.config(text = 'Barcode not found, please enter a valid one')
+            
     def transaction_total(self, item=""):
         sum = 0.0
         for row in self.data_tree.get_children(item):
             sum += float(self.data_tree.item(row)['values'][3])
 
         return sum
+
+    def cashout(self):
+        # triggered by cashout button
+        cash = self.customer_cash_var.get() - self.transaction_total()
+        self.chash_handed_back_lbl.config(text = ('Give the customer: ' + str(cash) + ' dollars back'))
+
+    
 
     def show_database(self):
         pass

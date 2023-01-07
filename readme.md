@@ -4,4 +4,4 @@ history of a product: shows when the item was firstly added to the database and 
 
 Needs to be fixed:
 1. when entering an item in the database, make sure that the barcode is unique
-2. in the cashier tab add a label indicating that the barcode is not found
+    if there are multiple items in the database with the same barcode add pop up window when the item is scanned
