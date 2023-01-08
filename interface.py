@@ -1,9 +1,29 @@
-# -*- coding: UTF-8 -*-
 import tkinter as tk                    
 from tkinter import ttk
 import database
+import json
+import codecs
 
+"""
+write data
+settings = {"lang": "1", "color": "1"}
+with open('configs.json', 'w') as f:
+    json.dump(settings, f)
 
+read data
+with open('configs.json', 'r') as f:
+    settings = json.load(f)
+
+settings["lang"] = "2"
+with open('configs.json', 'w') as f:
+    json.dump(settings, f)
+"""
+with codecs.open('langs.json', 'r', 'utf-8') as f:
+    langs = json.load(f)
+with open('configs.json', 'r') as f:
+    settings = json.load(f)
+
+#print(settings['lang'])
 class App(tk.Tk):
     def __init__(self,*args,**kwargs):
         tk.Tk.__init__(self,*args,**kwargs)
@@ -18,7 +38,7 @@ class App(tk.Tk):
         tab2 = items_database(self.notebook)
         tab3 = history(self.notebook)
         tab4 = settings(self.notebook)
-        self.notebook.add(tab1,text="Cashier")
+        self.notebook.add(tab1,text=langs["tab1_title"][0])
         self.notebook.add(tab2,text="Database")
         self.notebook.add(tab3,text="History")
         self.notebook.add(tab4,text="Settings")
@@ -317,16 +337,37 @@ class items_database(ttk.Frame):
         """
  
 class history(ttk.Frame):
-   def __init__(self,name,*args,**kwargs):
+   def __init__(self,*args,**kwargs):
        ttk.Frame.__init__(self,*args,**kwargs)
-       self.label = ttk.Label(self, text="Hi This is Tab3")
-       self.label.grid(row=1,column=0,padx=10,pady=10)
+
 
 class settings(ttk.Frame):
-   def __init__(self,name,*args,**kwargs):
-       ttk.Frame.__init__(self,*args,**kwargs)
-       self.label = ttk.Label(self, text="Hi This is Tab4")
-       self.label.grid(row=1,column=0,padx=10,pady=10)
+    def __init__(self,*args,**kwargs):
+        ttk.Frame.__init__(self,*args,**kwargs)
+
+        self.lang_var = tk.StringVar(self, '1')
+        ttk.Label(self, text ="Choose Language").grid(row = 0, column= 0)
+
+        self.english_rbutton = tk.Radiobutton(self, text = 'English', variable = self.lang_var, value = "1")
+
+        self.english_rbutton.grid(row=1,column=0)
+
+        self.arabic_rbutton = tk.Radiobutton(self, text = 'Arabic', variable = self.lang_var, value = "2")
+
+        self.arabic_rbutton.grid(row=2,column=0)
+
+"""   
+    def change_lang(self):
+        print(self.lang_var.get())
+        
+        if self.lang_var.get() == "1":
+            lang = 'en'
+        elif self.lang_var.get() == "2":
+            lang = 'ar'
+        print(lang)
+        return lang
+"""
+
 
 my_app = App()
 my_app.title(" POS System")
