@@ -20,10 +20,11 @@ with open('configs.json', 'w') as f:
 """
 with codecs.open('langs.json', 'r', 'utf-8') as f:
     langs = json.load(f)
-with open('configs.json', 'r') as f:
-    settings = json.load(f)
 
-#print(settings['lang'])
+with open('configs.json', 'r') as f:
+    configs = json.load(f)
+
+
 class App(tk.Tk):
     def __init__(self,*args,**kwargs):
         tk.Tk.__init__(self,*args,**kwargs)
@@ -33,60 +34,68 @@ class App(tk.Tk):
         
         self.notebook.pack(expand = True, fill ="both")
   
+
     def add_tab(self):
         tab1 = cashier(self.notebook)
         tab2 = items_database(self.notebook)
         tab3 = history(self.notebook)
         tab4 = settings(self.notebook)
-        self.notebook.add(tab1,text=langs["tab1_title"][0])
-        self.notebook.add(tab2,text="Database")
-        self.notebook.add(tab3,text="History")
-        self.notebook.add(tab4,text="Settings")
+        self.notebook.add(tab1,text=langs["tab1"]["title"][configs["lang"]])
+        self.notebook.add(tab2,text=langs["tab2"]["title"][configs["lang"]])
+        self.notebook.add(tab3,text=langs["tab3"]["title"][configs["lang"]])
+        self.notebook.add(tab4,text=langs["tab4"]["title"][configs["lang"]])
+
 
 class cashier(ttk.Frame):
     def __init__(self,*args,**kwargs):
         ttk.Frame.__init__(self,*args,**kwargs)
         self.create_data_tree()
 
-        # Labels in the Database tab
-        ttk.Label(self, text ="Currant Transaction").grid(row = 0, column= 0, columnspan = 8, pady=20)
-        ttk.Label(self, text ="Total").grid(row = 9, column= 6, pady=20)
-        self.barcode_not_found = ttk.Label(self, text ="")
-        self.barcode_not_found.grid(row = 1, column= 11, pady=5)
-        self.chash_handed_back_lbl = ttk.Label(self, text ="")
-        self.chash_handed_back_lbl.grid(row = 11, column = 6, columnspan = 2, pady = 5)
-        #ttk.Label(self, text ="Item Name").grid(row = 1, column= 0, padx = 10, pady=20)
+        # Labels in the Cashier tab 
+        ttk.Label(self, text = langs["tab1"]["current_transaction_lbl"][configs["lang"]]).grid(row = 0, column= 0, columnspan = 8, pady = 20)
 
-        # buttons
-        add_button = ttk.Button(self, text = "Add", command=self.search_barcode)
-        add_button.grid(row = 1, column= 10, pady = 10)
+        ttk.Label(self, text = langs["tab1"]["total_lbl"][configs["lang"]]).grid(row = 9, column = 6, pady = 20)
 
-        delete_button = ttk.Button(self, text = "Delete", command=self.delete_item)
-        delete_button.grid(row = 2, column= 9, pady = 10)
+        ttk.Label(self, text = langs["tab1"]["cashout_lbl"][configs["lang"]]).grid(row = 11, column = 6, pady = 20)
 
-        cashout_button = ttk.Button(self, text = "Cashout", command=self.cashout)
-        cashout_button.grid(row = 10, column= 6, pady = 10)
+        self.barcode_not_found_lbl = ttk.Label(self, text = "")
+        self.barcode_not_found_lbl.grid(row = 1, column = 11, pady = 5)
 
-        # entry boxes
+        self.cashout_lbl = ttk.Label(self, text = "")
+        self.cashout_lbl.grid(row = 11, column = 7, columnspan = 2)
+
+        # buttons in the Cashier tab
+        add_btn = ttk.Button(self, text = langs["tab1"]["add_btn"][configs["lang"]], command = self.search_barcode)
+        add_btn.grid(row = 1, column= 10, pady = 10)
+
+        delete_button = ttk.Button(self, text = langs["tab1"]["delete_btn"][configs["lang"]], command = self.delete_item)
+        delete_button.grid(row = 2, column = 9, pady = 10)
+
+        cashout_button = ttk.Button(self, text = langs["tab1"]["cashin_btn"][configs["lang"]], command = self.cashout)
+        cashout_button.grid(row = 10, column = 6, pady = 10)
+
+        # entry boxes in the Cashier tab
         self.barcode_entry = ttk.Entry(self, width = 15)
-        self.barcode_entry.grid(row = 1, column= 9, padx = 10)
+        self.barcode_entry.grid(row = 1, column = 9, padx = 10)
 
         self.total_transaction_var = tk.DoubleVar()
-        self.customer_cash_var = tk.DoubleVar()
+        self.cashin_var = tk.DoubleVar()
         self.total_transaction = ttk.Entry(self, width = 20, textvariable = self.total_transaction_var, state="readonly")
         self.total_transaction.grid(row = 9, column= 7, padx = 10, pady=10)
 
-        self.total_transaction = ttk.Entry(self, width = 20, textvariable = self.customer_cash_var)
-        self.total_transaction.grid(row = 10, column= 7, padx = 10, pady=10)
+        self.cashin = ttk.Entry(self, width = 20, textvariable = self.cashin_var)
+        self.cashin.grid(row = 10, column= 7, padx = 10, pady=10)
 
         # update the total_transaction entry box
         self.total_transaction_var.set(self.transaction_total())
         #self.show_database()
 
+
     def delete_item(self):
         self.data_tree.delete(self.data_tree.selection()[0]) 
         # update the total_transaction entry box
         self.total_transaction_var.set(self.transaction_total())
+
 
     def search_barcode(self):
         # if the data_tree is empty, then add the item
@@ -123,21 +132,21 @@ class cashier(ttk.Frame):
         if record:
             self.data_tree.insert(parent='', index='end', text='', values=(record[0][0], record[0][2], 1, record[0][2], barcode))
         else:
-            self.barcode_not_found.config(text = 'Barcode not found, please enter a valid one')
-            
+            self.barcode_not_found_lbl.config(text = langs["tab1"]["invalid_barcode_lbl"][configs["lang"]])
+
+
     def transaction_total(self, item=""):
         sum = 0.0
         for row in self.data_tree.get_children(item):
             sum += float(self.data_tree.item(row)['values'][3])
-
         return sum
+
 
     def cashout(self):
         # triggered by cashout button
-        cash = self.customer_cash_var.get() - self.transaction_total()
-        self.chash_handed_back_lbl.config(text = ('Give the customer: ' + str(cash) + ' dollars back'))
+        cash = self.cashin_var.get() - self.transaction_total()
+        self.cashout_lbl.config(text = str(cash))
 
-    
 
     def show_database(self):
         pass
@@ -145,6 +154,7 @@ class cashier(ttk.Frame):
         #items_list = database.table().records('items')
         #for record in items_list:
             #self.data_tree.insert(parent='', index='end', text='', values=(record[0], record[1], record[2], record[3], record[4], record[5], record[6]))
+
 
         #self.show_database()
     def create_data_tree(self):
@@ -157,17 +167,12 @@ class cashier(ttk.Frame):
         self.data_tree.column("Quantity", width = 60)
         self.data_tree.column("Total", width = 150)
         self.data_tree.column("barcode", width = 0)
-        
-
-        self.data_tree.heading("name", text = "Name")
-        self.data_tree.heading("Price", text = "Unit Price")
-        self.data_tree.heading("Quantity", text = "Quantity")
-        self.data_tree.heading("Total", text = "Total Price")
-
+        self.data_tree.heading("name", text = langs["tab1"]["item_clmn"][configs["lang"]])
+        self.data_tree.heading("Price", text = langs["tab1"]["price_clmn"][configs["lang"]])
+        self.data_tree.heading("Quantity", text = langs["tab1"]["qua_clmn"][configs["lang"]])
+        self.data_tree.heading("Total", text = langs["tab1"]["total_clmn"][configs["lang"]])
         #self.data_tree.bind('<ButtonRelease-1>', self.selectItem)
         self.data_tree.grid(row = 1, column= 0, rowspan = 8, columnspan = 8, padx=20)
-        
-
         #return self.data_tree
         
 
@@ -178,13 +183,13 @@ class items_database(ttk.Frame):
         self.selected_item_id = None
 
         # Labels in the Database tab
-        ttk.Label(self, text ="Item Name").grid(row = 0, column= 0, padx = 10)
-        ttk.Label(self, text ="Cost Price").grid(row = 0, column= 1, padx = 10)
-        ttk.Label(self, text ="Sale Price").grid(row = 0, column= 2, padx = 10)
-        ttk.Label(self, text ="Profit").grid(row = 0, column= 3, padx = 10)
-        ttk.Label(self, text ="Quantity").grid(row = 0, column= 4, padx = 10)
-        ttk.Label(self, text ="Barcode").grid(row = 0, column= 5, padx = 10)
-        ttk.Label(self, text ="Products Database", font= 30).grid(row = 3, column= 0, columnspan = 6)
+        ttk.Label(self, text = langs["tab2"]["item_name_lbl"][configs["lang"]]).grid(row = 0, column= 0, padx = 10)
+        ttk.Label(self, text = langs["tab2"]["cost_lbl"][configs["lang"]]).grid(row = 0, column= 1, padx = 10)
+        ttk.Label(self, text = langs["tab2"]["price_lbl"][configs["lang"]]).grid(row = 0, column= 2, padx = 10)
+        ttk.Label(self, text = langs["tab2"]["profit_lbl"][configs["lang"]]).grid(row = 0, column= 3, padx = 10)
+        ttk.Label(self, text = langs["tab2"]["qua_lbl"][configs["lang"]]).grid(row = 0, column= 4, padx = 10)
+        ttk.Label(self, text = langs["tab2"]["barcode_lbl"][configs["lang"]]).grid(row = 0, column= 5, padx = 10)
+        ttk.Label(self, text = langs["tab2"]["Products Database_lbl"][configs["lang"]], font= 30).grid(row = 3, column= 0, columnspan = 6)
         self.added_label = ttk.Label(self, text ="")
         self.added_label.grid(row = 2, column= 3, columnspan = 5)
 
@@ -218,22 +223,19 @@ class items_database(ttk.Frame):
 
 
         #Buttons in the Database tab
-        clear_button = ttk.Button(self, text = "Clear", command=self.clear_entries)
+        clear_button = ttk.Button(self, text = langs["tab2"]["clear_btn"][configs["lang"]], command=self.clear_entries)
         clear_button.grid(row = 2, column= 1, pady = 10)
 
-        submit_button = ttk.Button(self, text = "Add", command=self.store_data)
+        submit_button = ttk.Button(self, text = langs["tab2"]["add_btn"][configs["lang"]], command=self.store_data)
         submit_button.grid(row = 2, column= 0, pady = 10)
 
-        delete_button = ttk.Button(self, text = "Delete", command=self.delete_item1)
+        delete_button = ttk.Button(self, text = langs["tab2"]["delete_btn"][configs["lang"]], command=self.delete_item1)
         delete_button.grid(row = 5, column= 0, pady = 10)
 
-        edit_button = ttk.Button(self, text = "Submit Edit", command=self.edit_item1)
+        edit_button = ttk.Button(self, text = langs["tab2"]["submit_btn"][configs["lang"]], command=self.edit_item1)
         edit_button.grid(row = 2, column= 2, pady = 10)
 
-        #edit_button = ttk.Button(self, text = "View history", command=self.item_history_window)
-        #edit_button.grid(row = 5, column= 1, pady = 10)
-
-    #Scrollbars
+        #Scrollbars
         self.verscrlbar = ttk.Scrollbar(self,
                                 orient ="vertical",
                                 command = self.data_tree.yview)
@@ -267,7 +269,7 @@ class items_database(ttk.Frame):
     
     def store_data(self):
         database.Product(self.item_name_input.get(), self.item_cost_input.get(), self.item_sale_input.get(), self.item_profit_input.get(), self.item_qua_input.get(), self.item_barcode_input.get(), "").add_item()
-        message = "Added " + str(self.item_name_input.get()) + " to the database"
+        message = langs["tab2"]["added_lbl_1"][configs["lang"]] + str(self.item_name_input.get()) + langs["tab2"]["added_lbl_2"][configs["lang"]]
         self.added_label.config(text = message)
         self.show_database()
     
@@ -284,13 +286,13 @@ class items_database(ttk.Frame):
         self.data_tree.column("Barcode", width = 150)
         self.data_tree.column("id", width = 50)
 
-        self.data_tree.heading("name", text = "item name")
-        self.data_tree.heading("Cost", text = "Cost")
-        self.data_tree.heading("Sale", text = "Sale")
-        self.data_tree.heading("Profit", text = "Profit")
-        self.data_tree.heading("Quantity", text = "Quantity")
-        self.data_tree.heading("Barcode", text = "Barcode")
-        self.data_tree.heading("id", text = "id")
+        self.data_tree.heading("name", text = langs["tab2"]["item_clmn"][configs["lang"]])
+        self.data_tree.heading("Cost", text = langs["tab2"]["cost_clmn"][configs["lang"]])
+        self.data_tree.heading("Sale", text = langs["tab2"]["price_clmn"][configs["lang"]])
+        self.data_tree.heading("Profit", text = langs["tab2"]["profit_clmn"][configs["lang"]])
+        self.data_tree.heading("Quantity", text = langs["tab2"]["qua_clmn"][configs["lang"]])
+        self.data_tree.heading("Barcode", text = langs["tab2"]["barcode_clmn"][configs["lang"]])
+        self.data_tree.heading("id", text = langs["tab2"]["id_clmn"][configs["lang"]])
         
 
         self.data_tree.bind('<ButtonRelease-1>', self.selectItem)
@@ -323,8 +325,7 @@ class items_database(ttk.Frame):
 
     def edit_item1(self):
         database.Product(self.item_name_input.get(), self.item_cost_input.get(), self.item_sale_input.get(), self.item_profit_input.get(), self.item_qua_input.get(), self.item_barcode_input.get(), self.selected_item_id).edit_item()
-        message = "Editted!"
-        self.added_label.config(text = message)
+        self.added_label.config(text = langs["tab2"]["editted_lbl"][configs["lang"]])
         self.show_database()
     """
     def item_history_window(self):
@@ -345,29 +346,34 @@ class settings(ttk.Frame):
     def __init__(self,*args,**kwargs):
         ttk.Frame.__init__(self,*args,**kwargs)
 
-        self.lang_var = tk.StringVar(self, '1')
-        ttk.Label(self, text ="Choose Language").grid(row = 0, column= 0)
+        self.lang_var = tk.IntVar(self, configs["lang"]) # reason for configs["lang"] is to highlight the current radio button setting
+        ttk.Label(self, text = langs["tab4"]["choose_lang_lbl"][configs["lang"]]).grid(row = 0, column= 0)
 
-        self.english_rbutton = tk.Radiobutton(self, text = 'English', variable = self.lang_var, value = "1")
+        self.english_rbutton = tk.Radiobutton(self, text = langs["tab4"]["en_rbtn"][configs["lang"]], variable = self.lang_var, value = 0)
 
         self.english_rbutton.grid(row=1,column=0)
 
-        self.arabic_rbutton = tk.Radiobutton(self, text = 'Arabic', variable = self.lang_var, value = "2")
+        self.arabic_rbutton = tk.Radiobutton(self, text = langs["tab4"]["ar_rbtn"][configs["lang"]], variable = self.lang_var, value = 1)
 
         self.arabic_rbutton.grid(row=2,column=0)
 
-"""   
-    def change_lang(self):
-        print(self.lang_var.get())
-        
-        if self.lang_var.get() == "1":
-            lang = 'en'
-        elif self.lang_var.get() == "2":
-            lang = 'ar'
-        print(lang)
-        return lang
-"""
+        restart_button = ttk.Button(self, text = langs["tab4"]["restart_btn"][configs["lang"]], command=self.change_lang)
+        restart_button.grid(row = 2, column= 1, pady = 10)
 
+  
+    def change_lang(self):
+        configs["lang"] = self.lang_var.get()
+        with open('configs.json', 'w') as f:
+            json.dump(configs, f)
+        restart()
+
+def restart():
+    global my_app
+    my_app.destroy()
+    my_app = App()
+    my_app.title(" POS System")
+    my_app.geometry("1000x700")
+    my_app.mainloop()
 
 my_app = App()
 my_app.title(" POS System")

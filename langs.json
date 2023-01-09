@@ -1,5 +1,54 @@
 {
-    "tab1_title": ["cashier", "الكاصة"]
+    "tab1": {
+        "title": ["Cashier", "الكاصة"],
+        "add_btn": ["Add", "أضف"],
+        "delete_btn": ["Delete", "امسح"],
+        "cashin_btn": ["Cash In", "النقود المستلمة"],
+        "current_transaction_lbl": ["Current Transaction", "المعاملة الحالية"],
+        "total_lbl": ["Total", "المجموع"],
+        "cashout_lbl": ["Cash Out: ", " :الراجع للعميل"],
+        "invalid_barcode_lbl": ["Barcode not found, please enter a valid one", "هذا الباركود غير موجود"],
+        "item_clmn": ["Item", "المنتج"],
+        "price_clmn": ["Unit Price", "السعر"],
+        "qua_clmn": ["Quantity", "الكمية"],
+        "total_clmn": ["Total Price", "السعر الكلي"]
+        
+    } ,
+    "tab2": {
+        "title": ["Database", "قاعدة البيانات"],
+        "clear_btn": ["Clear", "امسح الفراغات"],
+        "add_btn": ["Add", "أضف"],
+        "delete_btn": ["Delete", "امسح المنتج"],
+        "submit_btn": ["Submit Edit", "عدل البيانات"],
+        "item_name_lbl": ["Item Name","اسم المنتج"],
+        "cost_lbl": ["Cost","التكلفة"],
+        "price_lbl": ["Price","السعر"],
+        "profit_lbl": ["Profit","الربح"],
+        "qua_lbl": ["Quantity","الكمية"],
+        "barcode_lbl": ["Barcode","الباركود"],
+        "Products Database_lbl": ["Products Database","قاعدة بيانات المنتجات"],
+        "added_lbl_1": ["Added ","إلى قاعدة البيانات "],
+        "added_lbl_2": [" to the database"," تمت إضافة"],
+        "editted_lbl": ["Editted!","تم التعديل"],
+        "item_clmn": ["Item", "المنتج"],
+        "cost_clmn": ["Cost", "التكلفة"],
+        "price_clmn": ["Price", "السعر"],
+        "profit_clmn": ["Profit", "الربح"],
+        "qua_clmn": ["Quantity", "الكمية"],
+        "barcode_clmn": ["Barcode", "الباركود"],
+        "id_clmn": ["id", "id"]       
+    } ,
+    "tab3": {
+        "title": ["History", "تاريخ المعاملات"]
+    } ,
+    "tab4": {
+        "title": ["Settings", "الإعدادات"],
+        "choose_lang_lbl": ["Language", "اللغة"],
+        "en_rbtn": ["English", "الانجليزية"],
+        "ar_rbtn": ["Arabic", "العربية"],
+        "restart_btn": ["Restart", "أعد التشغيل"]
+    } 
+
 
 
 }
