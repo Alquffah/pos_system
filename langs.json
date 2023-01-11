@@ -47,6 +47,24 @@
         "en_rbtn": ["English", "الانجليزية"],
         "ar_rbtn": ["Arabic", "العربية"],
         "restart_btn": ["Restart", "أعد التشغيل"]
+    } ,
+    "tab5": {
+        "title": ["Employees", "الموظفين"],
+        "id_clmn": ["id", "id"],
+        "name_clmn": ["Name", "الاسم"],
+        "position_clmn": ["Position", "الوظيفة"],
+        "employment_type_clmn": ["Employment Type", "طبيعة الوظيفة"],
+        "salary_clmn": ["Salary", "الراتب"],
+        "date_of_birth_clmn": ["Date of Birth", "تاريخ الميلاد"],
+        "email_clmn": ["Email", "Email"],
+        "phone_clmn": ["Phone", "هاتف"],
+        "address_clmn": ["Address", "العنوان"],
+        "date_joined_clmn": ["Date Joined", "تاريخ الانضمام"],
+        "date_left_clmn": ["Date Left", "تاريخ المغادرة"]
+
+    } ,
+    "tab6": {
+        "title": ["Customers", "العملاء"]
     } 
 
 

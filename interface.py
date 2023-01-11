@@ -40,10 +40,14 @@ class App(tk.Tk):
         tab2 = items_database(self.notebook)
         tab3 = history(self.notebook)
         tab4 = settings(self.notebook)
+        tab5 = employees(self.notebook)
+        tab6 = customers(self.notebook)
         self.notebook.add(tab1,text=langs["tab1"]["title"][configs["lang"]])
         self.notebook.add(tab2,text=langs["tab2"]["title"][configs["lang"]])
         self.notebook.add(tab3,text=langs["tab3"]["title"][configs["lang"]])
         self.notebook.add(tab4,text=langs["tab4"]["title"][configs["lang"]])
+        self.notebook.add(tab5,text=langs["tab5"]["title"][configs["lang"]])
+        self.notebook.add(tab6,text=langs["tab6"]["title"][configs["lang"]])
 
 
 class cashier(ttk.Frame):
@@ -366,6 +370,50 @@ class settings(ttk.Frame):
         with open('configs.json', 'w') as f:
             json.dump(configs, f)
         restart()
+
+
+class employees(ttk.Frame):
+    def __init__(self,*args,**kwargs):
+        ttk.Frame.__init__(self,*args,**kwargs)
+        self.create_data_tree()
+
+    def create_data_tree(self):
+        #Treeview in the Database view
+        self.data_tree = ttk.Treeview(self, height=10)
+        self.data_tree["columns"] = ("id", "name", "position", "employment_type", "salary", "date_of_birth", "email", "phone", "address", "date_joined", "date_left")
+        self.data_tree.column("#0", width = 0)
+        self.data_tree.column("id", width = 50)
+        self.data_tree.column("name", width = 150)
+        self.data_tree.column("position", width = 60)
+        self.data_tree.column("employment_type", width = 80)
+        self.data_tree.column("salary", width = 50)
+        self.data_tree.column("date_of_birth", width = 60)
+        self.data_tree.column("email", width = 100)
+        self.data_tree.column("phone", width = 100)
+        self.data_tree.column("address", width = 100)
+        self.data_tree.column("date_joined", width = 100)
+        self.data_tree.column("date_left", width = 100)
+
+        self.data_tree.heading("id", text = langs["tab5"]["id_clmn"][configs["lang"]])
+        self.data_tree.heading("name", text = langs["tab5"]["name_clmn"][configs["lang"]])
+        self.data_tree.heading("position", text = langs["tab5"]["position_clmn"][configs["lang"]])
+        self.data_tree.heading("employment_type", text = langs["tab5"]["employment_type_clmn"][configs["lang"]])
+        self.data_tree.heading("salary", text = langs["tab5"]["salary_clmn"][configs["lang"]])
+        self.data_tree.heading("date_of_birth", text = langs["tab5"]["date_of_birth_clmn"][configs["lang"]])
+        self.data_tree.heading("email", text = langs["tab5"]["email_clmn"][configs["lang"]])
+        self.data_tree.heading("phone", text = langs["tab5"]["phone_clmn"][configs["lang"]])
+        self.data_tree.heading("address", text = langs["tab5"]["address_clmn"][configs["lang"]])
+        self.data_tree.heading("date_joined", text = langs["tab5"]["date_joined_clmn"][configs["lang"]])
+        self.data_tree.heading("date_left", text = langs["tab5"]["date_left_clmn"][configs["lang"]])
+        #self.data_tree.bind('<ButtonRelease-1>', self.selectItem)
+        self.data_tree.grid(row = 1, column= 0, rowspan = 8, columnspan = 8, padx=20)
+        #return self.data_tree
+
+
+class customers(ttk.Frame):
+   def __init__(self,*args,**kwargs):
+       ttk.Frame.__init__(self,*args,**kwargs)
+
 
 def restart():
     global my_app

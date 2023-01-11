@@ -18,17 +18,46 @@ class table:
 
     def create_transactions_table(self):
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS transactions (
-            id integer,
-            time string,
-            item_name string,
+            id INTEGER,
+            time TEXT,
+            item_name TEXT,
             item_cost REAL,
             item_sale REAL,
             item_quantity INTEGER,
             item_total_profit REAL,
-            item_barcode string,
-            customer_id string,
-            employee_id string
+            item_barcode TEXT,
+            customer_id TEXT,
+            employee_id TEXT,
+            status TEXT
         )""")
+
+    def create_employees_table(self):
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS employees (
+            id INTEGER,
+            name TEXT,
+            position TEXT,
+            employment_type TEXT,
+            salary REAL,
+            date_of_birth TEXT,
+            email TEXT,
+            phone TEXT,
+            address TEXT,
+            date_joined TEXT,
+            date_left TEXT
+        )""")
+
+    def create_customers_table(self):
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS customers (
+            id INTEGER,
+            name TEXT,
+            email TEXT,
+            phone TEXT,
+            address TEXT
+        )""")
+
+    def delete_table(self, table):
+        self.cursor.execute("DROP TABLE {}".format(table))
+        self.conn.commit()
 
     def delete_item(self, id):
         self.cursor.execute("DELETE from items WHERE oid = (?)", [id])
@@ -81,7 +110,7 @@ class Product:
 
 
 
-"""
+
 @dataclass
 class Transaction:
     id: int
@@ -92,6 +121,9 @@ class Transaction:
     item_qua: int
     item_total_profit: float
     item_barcode: str
+    customer_id: str
+    employee_id: str
+    status: str # paid fully by the customer or has been added as debt
    
 @dataclass
 class customer:
@@ -105,12 +137,19 @@ class customer:
 class employee:
     id: int
     name: str
+    position: str
+    employment_type: str  # full or part time, contract, etc...
+    salary: float
+    date_of_birth: str
     email: str
     phone: str
     address: str
-"""
+    date_joined: str
+    date_left: str
 
 
-#table().create_table()
+
+#table().create_customers_table()
 #print(table().records('items'))
 #print(table().find_item('4'))
+#table().delete_table("transactions")
