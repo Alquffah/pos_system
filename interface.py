@@ -165,7 +165,7 @@ class cashier(ttk.Frame):
         #Treeview in the Database view
         self.data_tree = ttk.Treeview(self, height=10)
         self.data_tree["columns"] = ("name", "Price", "Quantity", "Total", "barcode")
-        self.data_tree.column("#0", width = 0)
+        self.data_tree.column("#0", width = 0, stretch=False)
         self.data_tree.column("name", width = 150)
         self.data_tree.column("Price", width = 60)
         self.data_tree.column("Quantity", width = 60)
@@ -239,13 +239,6 @@ class items_database(ttk.Frame):
         edit_button = ttk.Button(self, text = langs["tab2"]["submit_btn"][configs["lang"]], command=self.edit_item1)
         edit_button.grid(row = 2, column= 2, pady = 10)
 
-        #Scrollbars
-        self.verscrlbar = ttk.Scrollbar(self,
-                                orient ="vertical",
-                                command = self.data_tree.yview)
-        self.verscrlbar.grid(row = 4, column= 6)
-        self.data_tree.configure(xscrollcommand = self.verscrlbar.set)
-
     #Functions
     def calculate_profit(self, *args):
 
@@ -301,6 +294,14 @@ class items_database(ttk.Frame):
 
         self.data_tree.bind('<ButtonRelease-1>', self.selectItem)
         self.data_tree.grid(row = 4, column= 0, columnspan = 6, padx=20)
+
+        #Scrollbars
+        self.verscrlbar = ttk.Scrollbar(self,
+                                orient ="vertical",
+                                command = self.data_tree.yview)
+        self.verscrlbar.grid(row = 4, column= 6, sticky='ns')
+        self.data_tree.configure(yscrollcommand = self.verscrlbar.set)
+        self.data_tree.configure(selectmode="extended")
         
 
         #return self.data_tree
@@ -377,12 +378,55 @@ class employees(ttk.Frame):
         ttk.Frame.__init__(self,*args,**kwargs)
         self.create_data_tree()
 
+
+        ttk.Label(self, text = langs["tab5"]["name_clmn"][configs["lang"]]).grid(row = 0, column= 0, padx = 10)
+        ttk.Label(self, text = langs["tab5"]["position_clmn"][configs["lang"]]).grid(row = 0, column= 1, padx = 10)
+        ttk.Label(self, text = langs["tab5"]["employment_type_clmn"][configs["lang"]]).grid(row = 0, column= 2, padx = 10)
+        ttk.Label(self, text = langs["tab5"]["salary_clmn"][configs["lang"]]).grid(row = 0, column= 3, padx = 10)
+        ttk.Label(self, text = langs["tab5"]["date_of_birth_clmn"][configs["lang"]]).grid(row = 0, column= 4, padx = 10)
+        ttk.Label(self, text = langs["tab5"]["email_clmn"][configs["lang"]]).grid(row = 2, column= 0, padx = 10)
+        ttk.Label(self, text = langs["tab5"]["phone_clmn"][configs["lang"]]).grid(row = 2, column= 1)
+        ttk.Label(self, text = langs["tab5"]["address_clmn"][configs["lang"]]).grid(row = 2, column= 2, padx = 10)
+        ttk.Label(self, text = langs["tab5"]["date_joined_clmn"][configs["lang"]]).grid(row = 2, column= 3, padx = 10)
+        ttk.Label(self, text = langs["tab5"]["date_left_clmn"][configs["lang"]]).grid(row = 2, column= 4)
+
+        #Entry boxes in the employees tab
+
+        self.name_input = ttk.Entry(self, width = 10)
+        self.name_input.grid(row = 1, column= 0, padx = 10)
+
+        self.position_input = ttk.Entry(self, width = 10)
+        self.position_input.grid(row = 1, column= 1, padx = 10)
+
+        self.employment_type_input = ttk.Entry(self, width = 10)
+        self.employment_type_input.grid(row = 1, column= 2, padx = 10)
+
+        self.salary_input = ttk.Entry(self, width = 10)
+        self.salary_input.grid(row = 1, column= 3, padx = 10)
+
+        self.date_of_birth_input = ttk.Entry(self, width = 10)
+        self.date_of_birth_input.grid(row = 1, column= 4, padx = 10)
+
+        self.email_input = ttk.Entry(self, width = 10)
+        self.email_input.grid(row = 3, column= 0, padx = 10)
+
+        self.phone_input = ttk.Entry(self, width = 10)
+        self.phone_input.grid(row = 3, column= 1, padx = 10)
+
+        self.address_input = ttk.Entry(self, width = 10)
+        self.address_input.grid(row = 3, column= 2, padx = 10)
+
+        self.date_joined_input = ttk.Entry(self, width = 10)
+        self.date_joined_input.grid(row = 3, column= 3, padx = 10)
+
+        self.date_left_input = ttk.Entry(self, width = 10)
+        self.date_left_input.grid(row = 3, column= 4, padx = 10)
+
     def create_data_tree(self):
         #Treeview in the Database view
-        self.data_tree = ttk.Treeview(self, height=10)
-        self.data_tree["columns"] = ("id", "name", "position", "employment_type", "salary", "date_of_birth", "email", "phone", "address", "date_joined", "date_left")
-        self.data_tree.column("#0", width = 0)
-        self.data_tree.column("id", width = 50)
+        self.data_tree = ttk.Treeview(self, height=10,selectmode='extended')
+        self.data_tree["columns"] = ("name", "position", "employment_type", "salary", "date_of_birth", "email", "phone", "address", "date_joined", "date_left")
+        self.data_tree.column("#0", width = 20, stretch=False)
         self.data_tree.column("name", width = 150)
         self.data_tree.column("position", width = 60)
         self.data_tree.column("employment_type", width = 80)
@@ -394,7 +438,7 @@ class employees(ttk.Frame):
         self.data_tree.column("date_joined", width = 100)
         self.data_tree.column("date_left", width = 100)
 
-        self.data_tree.heading("id", text = langs["tab5"]["id_clmn"][configs["lang"]])
+        self.data_tree.heading("#0", text = langs["tab5"]["id_clmn"][configs["lang"]], anchor="w")
         self.data_tree.heading("name", text = langs["tab5"]["name_clmn"][configs["lang"]])
         self.data_tree.heading("position", text = langs["tab5"]["position_clmn"][configs["lang"]])
         self.data_tree.heading("employment_type", text = langs["tab5"]["employment_type_clmn"][configs["lang"]])
@@ -406,8 +450,12 @@ class employees(ttk.Frame):
         self.data_tree.heading("date_joined", text = langs["tab5"]["date_joined_clmn"][configs["lang"]])
         self.data_tree.heading("date_left", text = langs["tab5"]["date_left_clmn"][configs["lang"]])
         #self.data_tree.bind('<ButtonRelease-1>', self.selectItem)
-        self.data_tree.grid(row = 1, column= 0, rowspan = 8, columnspan = 8, padx=20)
-        #return self.data_tree
+        self.data_tree.grid(row = 5, column= 0, rowspan = 6, columnspan = 6, padx=20, pady=10)
+        #Scrollbars
+        self.horscrlbar = ttk.Scrollbar(self, orient ="horizontal")
+        self.horscrlbar.grid(row = 14, column= 1, sticky='ew')
+        self.data_tree.configure(xscrollcommand = self.horscrlbar.set)
+        #self.data_tree.configure(selectmode="extended")
 
 
 class customers(ttk.Frame):
