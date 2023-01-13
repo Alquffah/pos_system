@@ -64,7 +64,14 @@
 
     } ,
     "tab6": {
-        "title": ["Customers", "العملاء"]
+        "title": ["Customers", "العملاء"],
+        "data_tree_clmns": {
+            "name_clmn": ["Name", "الاسم"],
+            "email_clmn": ["Email", "Email"],
+            "phone_clmn": ["Phone", "هاتف"],
+            "address_clmn": ["Address", "العنوان"]
+        }
+
     } 
 
 
