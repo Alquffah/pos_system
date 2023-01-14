@@ -8,10 +8,13 @@
         "total_lbl": ["Total", "المجموع"],
         "cashout_lbl": ["Cash Out: ", " :الراجع للعميل"],
         "invalid_barcode_lbl": ["Barcode not found, please enter a valid one", "هذا الباركود غير موجود"],
-        "item_clmn": ["Item", "المنتج"],
-        "price_clmn": ["Unit Price", "السعر"],
-        "qua_clmn": ["Quantity", "الكمية"],
-        "total_clmn": ["Total Price", "السعر الكلي"]
+        "data_tree_clmns": {
+            "item_clmn": ["Item", "المنتج"],
+            "price_clmn": ["Unit Price", "السعر"],
+            "qua_clmn": ["Quantity", "الكمية"],
+            "total_clmn": ["Total Price", "السعر الكلي"],
+            "barcode_clmn": ["barcode", "الباركود"]
+        }
         
     } ,
     "tab2": {
@@ -30,13 +33,16 @@
         "added_lbl_1": ["Added ","إلى قاعدة البيانات "],
         "added_lbl_2": [" to the database"," تمت إضافة"],
         "editted_lbl": ["Editted!","تم التعديل"],
-        "item_clmn": ["Item", "المنتج"],
-        "cost_clmn": ["Cost", "التكلفة"],
-        "price_clmn": ["Price", "السعر"],
-        "profit_clmn": ["Profit", "الربح"],
-        "qua_clmn": ["Quantity", "الكمية"],
-        "barcode_clmn": ["Barcode", "الباركود"],
-        "id_clmn": ["id", "id"]       
+        "data_tree_clmns": {
+            "item_clmn": ["Item", "المنتج"],
+            "cost_clmn": ["Cost", "التكلفة"],
+            "price_clmn": ["Price", "السعر"],
+            "profit_clmn": ["Profit", "الربح"],
+            "qua_clmn": ["Quantity", "الكمية"],
+            "barcode_clmn": ["Barcode", "الباركود"],
+            "id_clmn": ["id", "id"] 
+        }
+      
     } ,
     "tab3": {
         "title": ["History", "تاريخ المعاملات"]
@@ -50,17 +56,18 @@
     } ,
     "tab5": {
         "title": ["Employees", "الموظفين"],
-        "id_clmn": ["id", "id"],
-        "name_clmn": ["Name", "الاسم"],
-        "position_clmn": ["Position", "الوظيفة"],
-        "employment_type_clmn": ["Employment Type", "طبيعة الوظيفة"],
-        "salary_clmn": ["Salary", "الراتب"],
-        "date_of_birth_clmn": ["Date of Birth", "تاريخ الميلاد"],
-        "email_clmn": ["Email", "Email"],
-        "phone_clmn": ["Phone", "هاتف"],
-        "address_clmn": ["Address", "العنوان"],
-        "date_joined_clmn": ["Date Joined", "تاريخ الانضمام"],
-        "date_left_clmn": ["Date Left", "تاريخ المغادرة"]
+        "data_tree_clmns": {
+            "name_clmn": ["Name", "الاسم"],
+            "position_clmn": ["Position", "الوظيفة"],
+            "employment_type_clmn": ["Employment Type", "طبيعة الوظيفة"],
+            "salary_clmn": ["Salary", "الراتب"],
+            "date_of_birth_clmn": ["Date of Birth", "تاريخ الميلاد"],
+            "email_clmn": ["Email", "Email"],
+            "phone_clmn": ["Phone", "هاتف"],
+            "address_clmn": ["Address", "العنوان"],
+            "date_joined_clmn": ["Date Joined", "تاريخ الانضمام"],
+            "date_left_clmn": ["Date Left", "تاريخ المغادرة"]
+        }
 
     } ,
     "tab6": {
@@ -70,7 +77,8 @@
             "email_clmn": ["Email", "Email"],
             "phone_clmn": ["Phone", "هاتف"],
             "address_clmn": ["Address", "العنوان"]
-        }
+        },
+        "add_btn": ["Add", "أضف"]
 
     } 
 

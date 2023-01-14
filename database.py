@@ -108,6 +108,8 @@ class Product:
         parameters = (self.name, self.cost, self.sale, self.profit, self.qua, self.barcode, self.id)
         self.run_query(query, parameters)
 
+    def __del__(self):
+        self.conn.close()
 
 
 
@@ -133,6 +135,22 @@ class customer:
     phone: str
     address: str
 
+    def run_query(self, query, parameters = ()):
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            result = cursor.execute(query, parameters)
+            conn.commit()
+            #conn.close()
+        return result
+
+    def add_item(self):
+        query = "INSERT INTO customers (name, cost, price, profit, quantity, bar_code) VALUES (?,?,?,?,?,?)"
+        #query = "INSERT INTO products VALUES (?,?,?,?,?,?)"
+        parameters = (self.name, self.cost, self.sale, self.profit, self.qua, self.barcode)
+        self.run_query(query, parameters)
+
+    def __del__(self):
+        self.conn.close()
 @dataclass
 class employee:
     id: int

@@ -159,25 +159,15 @@ class cashier(ttk.Frame):
         #for record in items_list:
             #self.data_tree.insert(parent='', index='end', text='', values=(record[0], record[1], record[2], record[3], record[4], record[5], record[6]))
 
-
-        #self.show_database()
     def create_data_tree(self):
-        #Treeview in the Database view
-        self.data_tree = ttk.Treeview(self, height=10)
-        self.data_tree["columns"] = ("name", "Price", "Quantity", "Total", "barcode")
-        self.data_tree.column("#0", width = 0, stretch=False)
-        self.data_tree.column("name", width = 150)
-        self.data_tree.column("Price", width = 60)
-        self.data_tree.column("Quantity", width = 60)
-        self.data_tree.column("Total", width = 150)
-        self.data_tree.column("barcode", width = 0)
-        self.data_tree.heading("name", text = langs["tab1"]["item_clmn"][configs["lang"]])
-        self.data_tree.heading("Price", text = langs["tab1"]["price_clmn"][configs["lang"]])
-        self.data_tree.heading("Quantity", text = langs["tab1"]["qua_clmn"][configs["lang"]])
-        self.data_tree.heading("Total", text = langs["tab1"]["total_clmn"][configs["lang"]])
-        #self.data_tree.bind('<ButtonRelease-1>', self.selectItem)
+        coulmns_headers = [x for x in langs["tab1"]["data_tree_clmns"]]
+        self.data_tree = ttk.Treeview(self, height=10, columns=coulmns_headers)
+        self.data_tree.column("#0", width = 20, stretch=False)
+        self.data_tree.heading("#0", text = "id")
+        for i in coulmns_headers:
+            self.data_tree.column(i, anchor='c', width=90, stretch=False)
+            self.data_tree.heading(i, text=langs["tab1"]["data_tree_clmns"][i][configs["lang"]])
         self.data_tree.grid(row = 1, column= 0, rowspan = 8, columnspan = 8, padx=20)
-        #return self.data_tree
         
 
 class items_database(ttk.Frame):
@@ -187,12 +177,10 @@ class items_database(ttk.Frame):
         self.selected_item_id = None
 
         # Labels in the Database tab
-        ttk.Label(self, text = langs["tab2"]["item_name_lbl"][configs["lang"]]).grid(row = 0, column= 0, padx = 10)
-        ttk.Label(self, text = langs["tab2"]["cost_lbl"][configs["lang"]]).grid(row = 0, column= 1, padx = 10)
-        ttk.Label(self, text = langs["tab2"]["price_lbl"][configs["lang"]]).grid(row = 0, column= 2, padx = 10)
-        ttk.Label(self, text = langs["tab2"]["profit_lbl"][configs["lang"]]).grid(row = 0, column= 3, padx = 10)
-        ttk.Label(self, text = langs["tab2"]["qua_lbl"][configs["lang"]]).grid(row = 0, column= 4, padx = 10)
-        ttk.Label(self, text = langs["tab2"]["barcode_lbl"][configs["lang"]]).grid(row = 0, column= 5, padx = 10)
+        input_boxes_lbls = ["item_name_lbl", "cost_lbl", "price_lbl", "profit_lbl", "qua_lbl", "barcode_lbl"]
+        for i, label in enumerate(input_boxes_lbls):
+            ttk.Label(self, text = langs["tab2"][label][configs["lang"]]).grid(row = 0, column= i, padx = 10)
+
         ttk.Label(self, text = langs["tab2"]["Products Database_lbl"][configs["lang"]], font= 30).grid(row = 3, column= 0, columnspan = 6)
         self.added_label = ttk.Label(self, text ="")
         self.added_label.grid(row = 2, column= 3, columnspan = 5)
@@ -272,12 +260,12 @@ class items_database(ttk.Frame):
       
     def create_data_tree(self):
         #Treeview in the Database view
-        coulmns_headers = ["item_clmn", "cost_clmn", "price_clmn", "profit_clmn", "qua_clmn", "barcode_clmn", "id_clmn"]
+        coulmns_headers = [x for x in langs["tab2"]["data_tree_clmns"]]
         self.data_tree = ttk.Treeview(self, columns=coulmns_headers)
         self.data_tree.column("#0", width = 0)
         for i in coulmns_headers:
             self.data_tree.column(i, anchor='c', width=100, stretch=False)
-            self.data_tree.heading(i, text=langs["tab2"][i][configs["lang"]])
+            self.data_tree.heading(i, text=langs["tab2"]["data_tree_clmns"][i][configs["lang"]])
         
         self.data_tree.bind('<ButtonRelease-1>', self.selectItem)
         self.data_tree.grid(row = 4, column= 0, columnspan = 6, padx=20)
@@ -360,72 +348,34 @@ class settings(ttk.Frame):
 class employees(ttk.Frame):
     def __init__(self,*args,**kwargs):
         ttk.Frame.__init__(self,*args,**kwargs)
+        self.input_boxes = []
         self.grid_rowconfigure(0, weight = 0)
         self.grid_columnconfigure(0, weight = 0)
         #self.grid_columnconfigure(1, weight = 1)
         self.create_data_tree()
 
-
-        ttk.Label(self, text = langs["tab5"]["name_clmn"][configs["lang"]]).grid(row = 0, column= 0, padx = 10)
-        ttk.Label(self, text = langs["tab5"]["position_clmn"][configs["lang"]]).grid(row = 0, column= 1, padx = 10)
-        ttk.Label(self, text = langs["tab5"]["employment_type_clmn"][configs["lang"]]).grid(row = 0, column= 2, padx = 10)
-        ttk.Label(self, text = langs["tab5"]["salary_clmn"][configs["lang"]]).grid(row = 0, column= 3, padx = 10)
-        ttk.Label(self, text = langs["tab5"]["date_of_birth_clmn"][configs["lang"]]).grid(row = 0, column= 4, padx = 10)
-        ttk.Label(self, text = langs["tab5"]["email_clmn"][configs["lang"]]).grid(row = 2, column= 0, padx = 10)
-        ttk.Label(self, text = langs["tab5"]["phone_clmn"][configs["lang"]]).grid(row = 2, column= 1)
-        ttk.Label(self, text = langs["tab5"]["address_clmn"][configs["lang"]]).grid(row = 2, column= 2, padx = 10)
-        ttk.Label(self, text = langs["tab5"]["date_joined_clmn"][configs["lang"]]).grid(row = 2, column= 3, padx = 10)
-        ttk.Label(self, text = langs["tab5"]["date_left_clmn"][configs["lang"]]).grid(row = 2, column= 4)
-
-        #Entry boxes in the employees tab
-
-        self.name_input = ttk.Entry(self, width = 10)
-        self.name_input.grid(row = 1, column= 0, padx = 10)
-
-        self.position_input = ttk.Entry(self, width = 10)
-        self.position_input.grid(row = 1, column= 1, padx = 10)
-
-        self.employment_type_input = ttk.Entry(self, width = 10)
-        self.employment_type_input.grid(row = 1, column= 2, padx = 10)
-
-        self.salary_input = ttk.Entry(self, width = 10)
-        self.salary_input.grid(row = 1, column= 3, padx = 10)
-
-        self.date_of_birth_input = ttk.Entry(self, width = 10)
-        self.date_of_birth_input.grid(row = 1, column= 4, padx = 10)
-
-        self.email_input = ttk.Entry(self, width = 10)
-        self.email_input.grid(row = 3, column= 0, padx = 10)
-
-        self.phone_input = ttk.Entry(self, width = 10)
-        self.phone_input.grid(row = 3, column= 1, padx = 10)
-
-        self.address_input = ttk.Entry(self, width = 10)
-        self.address_input.grid(row = 3, column= 2, padx = 10)
-
-        self.date_joined_input = ttk.Entry(self, width = 10)
-        self.date_joined_input.grid(row = 3, column= 3, padx = 10)
-
-        self.date_left_input = ttk.Entry(self, width = 10)
-        self.date_left_input.grid(row = 3, column= 4, padx = 10)
+        for i, label in enumerate(langs["tab5"]["data_tree_clmns"]):
+            j, k = 0, i
+            if i > 4: j, k = 2, (k -5)
+            ttk.Label(self, text = langs["tab5"]["data_tree_clmns"][label][configs["lang"]]).grid(row = j, column= k, padx = 10)
+            self.box = ttk.Entry(self, width = 10)
+            self.box.grid(row = j+1, column= k, padx = 10)
+            self.input_boxes.append(self.box)
 
         self.horscrlbar = ttk.Scrollbar(self, orient ="horizontal", command = self.data_tree.xview)
         self.data_tree.configure(xscrollcommand = self.horscrlbar.set)
         self.horscrlbar.grid(row = 14, column= 0, columnspan = 6, sticky=tk.E +tk.W)
 
     def create_data_tree(self):
-        coulmns_headers = ["name_clmn", "position_clmn", "employment_type_clmn", "salary_clmn", "date_of_birth_clmn", "email_clmn", "phone_clmn", "address_clmn", "date_joined_clmn", "date_left_clmn"]
+        coulmns_headers = [x for x in langs["tab5"]["data_tree_clmns"]]
         self.data_tree = ttk.Treeview(self, columns=coulmns_headers)
         self.data_tree.column("#0", width = 20, stretch=False)
         self.data_tree.heading("#0", text = "id")
         for i in coulmns_headers:
             self.data_tree.column(i, anchor='c', width=90, stretch=False)
-            self.data_tree.heading(i, text=langs["tab5"][i][configs["lang"]])
-        
+            self.data_tree.heading(i, text=langs["tab5"]["data_tree_clmns"][i][configs["lang"]])
+       
         self.data_tree.grid(row = 5, column= 0,columnspan=10, rowspan = 6, padx=20, pady=10)
-        #Scrollbars
-
-        #self.data_tree.configure(selectmode="extended")
 
 
 class customers(ttk.Frame):
@@ -434,22 +384,31 @@ class customers(ttk.Frame):
         self.create_data_tree()
         self.input_boxes = []
         for i, label in enumerate(langs["tab6"]["data_tree_clmns"]):
-            ttk.Label(self, text = langs["tab6"]["data_tree_clmns"][label][configs["lang"]]).grid(row = 0, column= i, padx = 10)
+            ttk.Label(self, text = langs["tab6"]["data_tree_clmns"][label][configs["lang"]]).grid(row = 0, column= i, padx = 20)
             self.box = ttk.Entry(self, width = 10)
-            self.box.grid(row = 1, column= i, padx = 10)
+            self.box.grid(row = 1, column= i, padx = 20)
             self.input_boxes.append(self.box)
 
+        add_btn = ttk.Button(self, text = langs["tab6"]["add_btn"][configs["lang"]])
+        add_btn.grid(row = 1, column= 4, padx = 20)
+
+    
+
     def create_data_tree(self):
-        coulmns_headers = [x for x in langs["tab6"]["data_tree_clmns"]]
-        self.data_tree = ttk.Treeview(self, columns=coulmns_headers)
-        self.data_tree.column("#0", width = 20, stretch=False)
+        # grab the columns headers from the lang.json file
+        columns_headers = [x for x in langs["tab6"]["data_tree_clmns"]]
+        # create the treeview with columns from columns_headers
+        self.data_tree = ttk.Treeview(self, columns=columns_headers)
+        # make use of the the defualt first column and assign it as the id of the row
+        self.data_tree.column("#0", width = 20)
         self.data_tree.heading("#0", text = "id")
-        for i in coulmns_headers:
-            self.data_tree.column(i, anchor='c', width=90, stretch=False)
+        # create the rest of the columns
+        for i in columns_headers:
+            self.data_tree.column(i, anchor='c', width=90)
             self.data_tree.heading(i, text=langs["tab6"]["data_tree_clmns"][i][configs["lang"]])
-        
+        # position the data tree
         self.data_tree.grid(row = 5, column= 0,columnspan=10, rowspan = 6, padx=20, pady=10)
-            
+           
 
 def restart():
     global my_app
