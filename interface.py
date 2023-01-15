@@ -389,11 +389,25 @@ class customers(ttk.Frame):
             self.box.grid(row = 1, column= i, padx = 20)
             self.input_boxes.append(self.box)
 
-        add_btn = ttk.Button(self, text = langs["tab6"]["add_btn"][configs["lang"]])
+        add_btn = ttk.Button(self, text = langs["tab6"]["add_btn"][configs["lang"]], command=self.printer)
         add_btn.grid(row = 1, column= 4, padx = 20)
 
-    
 
+    def printer(self):
+        print([x.get() for x in self.input_boxes])
+
+    """   
+    def store_data(self):
+        database.customer(self.item_name_input.get(), self.item_cost_input.get(), self.item_sale_input.get(), self.item_profit_input.get(), self.item_qua_input.get(), self.item_barcode_input.get(), "").add_item()
+        message = langs["tab2"]["added_lbl_1"][configs["lang"]] + str(self.item_name_input.get()) + langs["tab2"]["added_lbl_2"][configs["lang"]]
+        self.added_label.config(text = message)
+        self.show_database()
+    def show_database(self):
+        self.data_tree.delete(*self.data_tree.get_children())
+        items_list = database.table().records('items')
+        for record in items_list:
+            self.data_tree.insert(parent='', index='end', text='', values=(record[0], record[1], record[2], record[3], record[4], record[5], record[6]))
+    """
     def create_data_tree(self):
         # grab the columns headers from the lang.json file
         columns_headers = [x for x in langs["tab6"]["data_tree_clmns"]]

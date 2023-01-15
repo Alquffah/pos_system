@@ -129,7 +129,6 @@ class Transaction:
    
 @dataclass
 class customer:
-    id: int
     name: str
     email: str
     phone: str
@@ -140,17 +139,16 @@ class customer:
             cursor = conn.cursor()
             result = cursor.execute(query, parameters)
             conn.commit()
-            #conn.close()
         return result
 
-    def add_item(self):
-        query = "INSERT INTO customers (name, cost, price, profit, quantity, bar_code) VALUES (?,?,?,?,?,?)"
-        #query = "INSERT INTO products VALUES (?,?,?,?,?,?)"
-        parameters = (self.name, self.cost, self.sale, self.profit, self.qua, self.barcode)
+    def add_customer(self):
+        query = "INSERT INTO customers (name, email, phone, address) VALUES (?,?,?,?)"
+        parameters = (self.name, self.email, self.phone, self.address)
         self.run_query(query, parameters)
 
     def __del__(self):
         self.conn.close()
+
 @dataclass
 class employee:
     id: int
