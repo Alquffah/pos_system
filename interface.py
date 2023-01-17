@@ -71,9 +71,11 @@ class treeview(object):
 class cashier(ttk.Frame):
     def __init__(self,*args,**kwargs):
         ttk.Frame.__init__(self,*args,**kwargs)
+        # treeview for the items list
         self.data_tree = treeview(self, "tab1").create_treeview()
         self.data_tree.grid(row = 1, column= 0, rowspan = 8, columnspan = 8, padx=20)
         self.data_tree.configure(height=10)
+
         # Labels in the Cashier tab 
         ttk.Label(self, text = langs["tab1"]["current_transaction_lbl"][configs["lang"]]).grid(row = 0, column= 0, columnspan = 8, pady = 20)
 
@@ -149,7 +151,7 @@ class cashier(ttk.Frame):
         # get the barcode number from the entry box
         barcode = self.barcode_entry.get()
         # find the item in the database that corresponds to the barcode
-        record = database.table().find_item(barcode)
+        record = database.table().find_record("items", "bar_code", barcode)
         # add the item to the data tree
         # if the barcode is not found, the database.table.find_item function will return an empty list
         if record:
@@ -262,7 +264,7 @@ class items_database(ttk.Frame):
         self.item_barcode_input.delete(0, 'end')
     
     def store_data(self):
-        database.Product(self.item_name_input.get(), self.item_cost_input.get(), self.item_sale_input.get(), self.item_profit_input.get(), self.item_qua_input.get(), self.item_barcode_input.get(), "").add_item()
+        database.Item(self.item_name_input.get(), self.item_cost_input.get(), self.item_sale_input.get(), self.item_profit_input.get(), self.item_qua_input.get(), self.item_barcode_input.get(), "").add_item()
         message = langs["tab2"]["added_lbl_1"][configs["lang"]] + str(self.item_name_input.get()) + langs["tab2"]["added_lbl_2"][configs["lang"]]
         self.added_label.config(text = message)
         self.show_database()
@@ -307,10 +309,10 @@ class items_database(ttk.Frame):
     def delete_item1(self):
         selected_item = self.data_tree.selection()[0] # get selected item
         self.data_tree.delete(selected_item) 
-        database.table().delete_item(self.selected_item_id)
+        database.table().delete_row("items", self.selected_item_id)
 
     def edit_item1(self):
-        database.Product(self.item_name_input.get(), self.item_cost_input.get(), self.item_sale_input.get(), self.item_profit_input.get(), self.item_qua_input.get(), self.item_barcode_input.get(), self.selected_item_id).edit_item()
+        database.Item(self.item_name_input.get(), self.item_cost_input.get(), self.item_sale_input.get(), self.item_profit_input.get(), self.item_qua_input.get(), self.item_barcode_input.get(), self.selected_item_id).edit_item()
         self.added_label.config(text = langs["tab2"]["editted_lbl"][configs["lang"]])
         self.show_database()
     """
@@ -380,8 +382,13 @@ class employees(ttk.Frame):
 class customers(ttk.Frame):
     def __init__(self,*args,**kwargs):
         ttk.Frame.__init__(self,*args,**kwargs)
+
+        self.added_label = ttk.Label(self, text ="")
+        self.added_label.grid(row = 1, column= 5, columnspan = 5)
+
         self.data_tree = treeview(self, "tab6").create_treeview()
-        self.data_tree.grid(row = 5, column= 0,columnspan=10, rowspan = 6, padx=20, pady=10)
+        self.data_tree.grid(row = 2, column= 0, columnspan=4, rowspan = 6, padx=20, pady=10)
+        self.show_database()
 
         self.input_boxes = []
         for i, label in enumerate(langs["tab6"]["data_tree_clmns"]):
@@ -390,12 +397,25 @@ class customers(ttk.Frame):
             self.box.grid(row = 1, column= i, padx = 20)
             self.input_boxes.append(self.box)
 
-        add_btn = ttk.Button(self, text = langs["tab6"]["add_btn"][configs["lang"]], command=self.printer)
+        add_btn = ttk.Button(self, text = langs["tab6"]["add_btn"][configs["lang"]], command=self.store_data)
         add_btn.grid(row = 1, column= 4, padx = 20)
 
 
     def printer(self):
         print([x.get() for x in self.input_boxes])
+
+    def store_data(self):
+        input_boxes_list = [x.get() for x in self.input_boxes]
+        database.customer(*input_boxes_list).add_customer()
+        message = langs["tab6"]["added_lbl_1"][configs["lang"]] + str(input_boxes_list[0]) + langs["tab6"]["added_lbl_2"][configs["lang"]]
+        self.added_label.config(text = message)
+        self.show_database()
+
+    def show_database(self):
+        self.data_tree.delete(*self.data_tree.get_children())
+        items_list = database.table().records("customers")
+        for record in items_list:
+            self.data_tree.insert(parent='', index='end', text="", values=(record[0], record[1], record[2], record[3]))
 
     """   
     def store_data(self):

@@ -48,7 +48,6 @@ class table:
 
     def create_customers_table(self):
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS customers (
-            id INTEGER,
             name TEXT,
             email TEXT,
             phone TEXT,
@@ -59,16 +58,16 @@ class table:
         self.cursor.execute("DROP TABLE {}".format(table))
         self.conn.commit()
 
-    def delete_item(self, id):
-        self.cursor.execute("DELETE from items WHERE oid = (?)", [id])
+    def delete_row(self, table, id):
+        self.cursor.execute("DELETE from {} WHERE oid = (?)".format(table), [id])
         self.conn.commit()
 
-    def records(self, name):
-        self.cursor.execute("SELECT *, oid FROM {}".format(name))
+    def records(self, table):
+        self.cursor.execute("SELECT *, oid FROM {}".format(table))
         return self.cursor.fetchall()
 
-    def find_item(self, barcode):
-        self.cursor.execute("SELECT * FROM items WHERE bar_code = (?)", barcode)
+    def find_record(self, table, parameter, value):
+        self.cursor.execute("SELECT * FROM {} WHERE {} = (?)".format(table, parameter), value)
         return self.cursor.fetchall()
 
     def __del__(self):
@@ -77,7 +76,7 @@ class table:
 
 #c = sqlite3.connect(':memory:') # database in memory
 @dataclass
-class Product:
+class Item:
     name: str
     cost: float
     sale: float
@@ -99,7 +98,6 @@ class Product:
 
     def add_item(self):
         query = "INSERT INTO items (name, cost, price, profit, quantity, bar_code) VALUES (?,?,?,?,?,?)"
-        #query = "INSERT INTO products VALUES (?,?,?,?,?,?)"
         parameters = (self.name, self.cost, self.sale, self.profit, self.qua, self.barcode)
         self.run_query(query, parameters)
 
@@ -108,8 +106,6 @@ class Product:
         parameters = (self.name, self.cost, self.sale, self.profit, self.qua, self.barcode, self.id)
         self.run_query(query, parameters)
 
-    def __del__(self):
-        self.conn.close()
 
 
 
@@ -146,8 +142,11 @@ class customer:
         parameters = (self.name, self.email, self.phone, self.address)
         self.run_query(query, parameters)
 
-    def __del__(self):
-        self.conn.close()
+    def edit_customer(self):
+        query = "UPDATE customers SET name = ?, email = ?, phone = ?, address = ? WHERE oid = ?"
+        parameters = (self.name, self.email, self.phone, self.address)
+        self.run_query(query, parameters)
+
 
 @dataclass
 class employee:
@@ -168,4 +167,6 @@ class employee:
 #table().create_customers_table()
 #print(table().records('items'))
 #print(table().find_item('4'))
-#table().delete_table("transactions")
+#table().delete_table("customers")
+#table().create_customers_table()
+#print(table().records("customers"))

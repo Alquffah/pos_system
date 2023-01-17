@@ -72,6 +72,8 @@
     } ,
     "tab6": {
         "title": ["Customers", "العملاء"],
+        "added_lbl_1": ["Added ","إلى قاعدة البيانات "],
+        "added_lbl_2": [" to the database"," تمت إضافة"],
         "data_tree_clmns": {
             "name_clmn": ["Name", "الاسم"],
             "email_clmn": ["Email", "Email"],
