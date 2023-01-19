@@ -14,9 +14,9 @@
             "qua_clmn": ["Quantity", "الكمية"],
             "total_clmn": ["Total Price", "السعر الكلي"],
             "barcode_clmn": ["barcode", "الباركود"]
-        }
-        
-    } ,
+        }   
+    },
+
     "tab2": {
         "title": ["Database", "قاعدة البيانات"],
         "clear_btn": ["Clear", "امسح الفراغات"],
@@ -42,19 +42,22 @@
             "barcode_clmn": ["Barcode", "الباركود"],
             "id_clmn": ["id", "id"] 
         }
-      
-    } ,
+    },
+
     "tab3": {
-        "title": ["History", "تاريخ المعاملات"]
-    } ,
+        "title": ["Customers", "العملاء"],
+        "added_lbl_1": ["Added ","إلى قاعدة البيانات "],
+        "added_lbl_2": [" to the database"," تمت إضافة"],
+        "data_tree_clmns": {
+            "name_clmn": ["Name", "الاسم"],
+            "email_clmn": ["Email", "Email"],
+            "phone_clmn": ["Phone", "هاتف"],
+            "address_clmn": ["Address", "العنوان"]
+        },
+        "add_btn": ["Add", "أضف"]
+    },
+
     "tab4": {
-        "title": ["Settings", "الإعدادات"],
-        "choose_lang_lbl": ["Language", "اللغة"],
-        "en_rbtn": ["English", "الانجليزية"],
-        "ar_rbtn": ["Arabic", "العربية"],
-        "restart_btn": ["Restart", "أعد التشغيل"]
-    } ,
-    "tab5": {
         "title": ["Employees", "الموظفين"],
         "data_tree_clmns": {
             "name_clmn": ["Name", "الاسم"],
@@ -68,22 +71,22 @@
             "date_joined_clmn": ["Date Joined", "تاريخ الانضمام"],
             "date_left_clmn": ["Date Left", "تاريخ المغادرة"]
         }
+    },
 
-    } ,
+    "tab5": {
+        "title": ["History", "تاريخ المعاملات"]
+    },
+
     "tab6": {
-        "title": ["Customers", "العملاء"],
-        "added_lbl_1": ["Added ","إلى قاعدة البيانات "],
-        "added_lbl_2": [" to the database"," تمت إضافة"],
-        "data_tree_clmns": {
-            "name_clmn": ["Name", "الاسم"],
-            "email_clmn": ["Email", "Email"],
-            "phone_clmn": ["Phone", "هاتف"],
-            "address_clmn": ["Address", "العنوان"]
-        },
-        "add_btn": ["Add", "أضف"]
+        "title": ["Analytics", ""]
+    },
 
-    } 
-
-
+    "tab7": {
+        "title": ["Settings", "الإعدادات"],
+        "choose_lang_lbl": ["Language", "اللغة"],
+        "en_rbtn": ["English", "الانجليزية"],
+        "ar_rbtn": ["Arabic", "العربية"],
+        "restart_btn": ["Restart", "أعد التشغيل"]
+    }
 
 }
