@@ -154,6 +154,16 @@ class cashier(ttk.Frame):
         # update the total_transaction entry box
         #self.total_transaction_var.set(self.transaction_total())
 
+        def generate_transaction_id(self):
+            trans_id = 1
+            while database.table().find_record("transactions", "id", trans_id):
+                trans_id += 1
+            return trans_id
+
+        
+
+
+
     """
     def delete_item(self):
         self.data_tree.delete(self.data_tree.selection()[0]) 

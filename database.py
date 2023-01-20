@@ -150,7 +150,6 @@ class customer:
 
 @dataclass
 class employee:
-    id: int
     name: str
     position: str
     employment_type: str  # full or part time, contract, etc...
@@ -161,6 +160,18 @@ class employee:
     address: str
     date_joined: str
     date_left: str
+
+    def run_query(self, query, parameters = ()):
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            result = cursor.execute(query, parameters)
+            conn.commit()
+        return result
+
+    def add_employee(self):
+        query = "INSERT INTO employees (name, position, employment_type, salary, date_of_birth, email, phone, address, date_joined, date_left) VALUES (?,?,?,?,?,?,?,?,?,?)"
+        parameters = (self.name, self.position, self.employment_type, self.salary, self.date_of_birth, self.email, self.phone, self.address, self.date_joined, self.date_left)
+        self.run_query(query, parameters)
 
 
 
