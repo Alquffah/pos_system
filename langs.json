@@ -70,7 +70,9 @@
             "address_clmn": ["Address", "العنوان"],
             "date_joined_clmn": ["Date Joined", "تاريخ الانضمام"],
             "date_left_clmn": ["Date Left", "تاريخ المغادرة"]
-        }
+        },
+        "add_btn": ["Add", "أضف"],
+        "start_shift_btn": ["Start Shift", "ابدأ المناوبة"]
     },
 
     "tab5": {

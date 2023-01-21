@@ -33,7 +33,6 @@ class table:
 
     def create_employees_table(self):
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS employees (
-            id INTEGER,
             name TEXT,
             position TEXT,
             employment_type TEXT,
@@ -178,6 +177,6 @@ class employee:
 #table().create_customers_table()
 #print(table().records('items'))
 #print(table().find_item('4'))
-#table().delete_table("customers")
-#table().create_customers_table()
+#table().delete_table("employees")
+#table().create_employees_table()
 #print(table().records("customers"))

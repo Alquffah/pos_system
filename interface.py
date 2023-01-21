@@ -3,6 +3,8 @@ from tkinter import ttk
 import database
 import json
 import codecs
+from datetime import datetime
+
 
 """
 write data
@@ -52,10 +54,12 @@ class App(tk.Tk):
 
 
 class treeview(object):
-    def __init__(self, parent, table):
+    def __init__(self, parent, table, entry_boxes):
         self.parent = parent
         self.table = table
+        self.entry_boxes = entry_boxes
         self.tab = ""
+        #self.cur_item = None
         self.switcher()
         self.create_treeview()
 
@@ -70,7 +74,11 @@ class treeview(object):
         for i in columns_headers:
             self.data_tree.column(i, anchor='c', width=90)
             self.data_tree.heading(i, text=langs[self.tab]["data_tree_clmns"][i][configs["lang"]])
-        self.data_tree.grid(row = 0, column= 0, rowspan = 6, columnspan=4, padx=20, pady=10)
+        
+        self.data_tree.bind('<ButtonRelease-1>', self.select)
+
+        self.data_tree.grid(row = 0, column= 0, rowspan = 6, columnspan=6, padx=20, pady=10, sticky="EW")
+
         self.show_database()
 
         
@@ -107,6 +115,12 @@ class treeview(object):
         elif self.table == "employees":
             self.tab = "tab4" 
        
+    def select(self, a):
+        curItem = self.data_tree.focus()
+        for i, box in enumerate(self.entry_boxes):
+            box.delete(0, tk.END)
+            box.insert(0, self.data_tree.item(curItem)["values"][i])
+
 
 ########################################################################
 class cashier(ttk.Frame):
@@ -114,7 +128,7 @@ class cashier(ttk.Frame):
         ttk.Frame.__init__(self,*args,**kwargs)
         self.tab = "tab1"
         # treeview for the items list
-        self.data_tree = treeview(self, "transactions")
+        self.data_tree = treeview(self, "transactions", "a")
         # Labels in the Cashier tab 
         #ttk.Label(self, text = langs[self.tab]["current_transaction_lbl"][configs["lang"]]).grid(row = 0, column= 0, columnspan = 8, pady = 20)
 
@@ -160,7 +174,8 @@ class cashier(ttk.Frame):
                 trans_id += 1
             return trans_id
 
-        
+        dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+       
 
 
 
@@ -384,7 +399,7 @@ class customers(ttk.Frame):
         self.added_label = ttk.Label(self, text ="")
         self.added_label.grid(row = 7, column= 5, columnspan = 5)
 
-        self.data_tree = treeview(self, "customers")
+        
 
         self.input_boxes = []
         for i, label in enumerate(langs[self.tab]["data_tree_clmns"]):
@@ -393,6 +408,7 @@ class customers(ttk.Frame):
             self.box.grid(row = 7, column= i, padx = 20)
             self.input_boxes.append(self.box)
 
+        self.data_tree = treeview(self, "customers", self.input_boxes)
         add_btn = ttk.Button(self, text = langs[self.tab]["add_btn"][configs["lang"]], command=lambda: self.data_tree.store_data(self.input_boxes))
         add_btn.grid(row = 7, column= 4, padx = 20)
 
@@ -404,7 +420,7 @@ class employees(ttk.Frame):
         ttk.Frame.__init__(self,*args,**kwargs)
         self.tab = "tab4"
 
-        self.data_tree = treeview(self, "employees")
+        
 
         self.input_boxes = []
         self.grid_rowconfigure(0, weight = 0)
@@ -412,12 +428,29 @@ class employees(ttk.Frame):
         #self.grid_columnconfigure(1, weight = 1)
 
         for i, label in enumerate(langs[self.tab]["data_tree_clmns"]):
-            j, k = 7, i
-            if i > 4: j, k = 9, (k -5)
+            j = 7
+            k = i
+            if i > 4:
+                j = 9
+                k -= 5
             ttk.Label(self, text = langs[self.tab]["data_tree_clmns"][label][configs["lang"]]).grid(row = j, column= k, padx = 10)
             self.box = ttk.Entry(self, width = 10)
             self.box.grid(row = j+1, column= k, padx = 10)
             self.input_boxes.append(self.box)
+
+        self.data_tree = treeview(self, "employees", self.input_boxes)
+
+        add_btn = ttk.Button(self, text = langs[self.tab]["add_btn"][configs["lang"]], command=lambda: self.data_tree.store_data(self.input_boxes))
+        add_btn.grid(row = 11, column= 0, padx = 20, pady=20)
+
+        start_shift_btn = ttk.Button(self, text = langs[self.tab]["start_shift_btn"][configs["lang"]], command=self.set_employee)
+        start_shift_btn.grid(row = 11, column= 1, padx = 20, pady=20)
+
+    def set_employee(self):
+        configs["employee_on_shift"] = self.input_boxes[0].get()
+        with open('configs.json', 'w') as f:
+            json.dump(configs, f)
+        restart()
 
         #self.horscrlbar = ttk.Scrollbar(self, orient ="horizontal", command = self.data_tree.xview)
         #self.data_tree.configure(xscrollcommand = self.horscrlbar.set)
@@ -470,12 +503,14 @@ def restart():
     global my_app
     my_app.destroy()
     my_app = App()
-    my_app.title(" POS System")
+    employee_on_shift = configs["employee_on_shift"]
+    my_app.title(" POS System :     " + str(employee_on_shift))
     my_app.geometry("1000x700")
     my_app.mainloop()
 
 my_app = App()
-my_app.title(" POS System")
+employee_on_shift = configs["employee_on_shift"]
+my_app.title(" POS System :     " + str(employee_on_shift))
 my_app.geometry("1000x700")
 #my_app.attributes('-fullscreen', True)
 # my_app.resizable(0,0) # fix window size
