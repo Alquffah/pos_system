@@ -26,8 +26,8 @@ class table:
             item_quantity INTEGER,
             item_total_profit REAL,
             item_barcode TEXT,
-            customer_id TEXT,
-            employee_id TEXT,
+            customer_name TEXT,
+            employee_name TEXT,
             status TEXT
         )""")
 
@@ -115,12 +115,24 @@ class Transaction:
     item_name: str
     item_cost: float
     item_sale: float
-    item_qua: int
+    item_quantity: int
     item_total_profit: float
     item_barcode: str
-    customer_id: str
-    employee_id: str
+    customer_name: str
+    employee_name: str
     status: str # paid fully by the customer or has been added as debt
+
+    def run_query(self, query, parameters = ()):
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            result = cursor.execute(query, parameters)
+            conn.commit()
+        return result
+
+    def add_transaction(self):
+        query = "INSERT INTO transactions (id, time, item_name, item_cost, item_sale, item_quantity, item_total_profit, item_barcode, customer_name, employee_name, status) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
+        parameters = (self.id, self.time, self.item_name, self.item_cost, self.item_sale, self.item_quantity, self.item_total_profit, self.item_barcode, self.customer_name, self.employee_name, self.status)
+        self.run_query(query, parameters)
    
 @dataclass
 class customer:
@@ -177,6 +189,6 @@ class employee:
 #table().create_customers_table()
 #print(table().records('items'))
 #print(table().find_item('4'))
-#table().delete_table("employees")
-#table().create_employees_table()
+#table().delete_table("transactions")
+#table().create_transactions_table()
 #print(table().records("customers"))

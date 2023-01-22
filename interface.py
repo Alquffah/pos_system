@@ -88,22 +88,38 @@ class treeview(object):
         for record in items_list:
             self.data_tree.insert(parent='', index='end', text=record[-1], values=[x for x in record[:-1]])
 
+    def show_database_limited(self):
+        self.data_tree.delete(*self.data_tree.get_children())
+        items_list = database.table().records(self.table)
+        print(items_list)
+        for record in items_list:
+            self.data_tree.insert(parent='', index='end', text=record[-1], values=[record[2], record[2], record[2], record[2], record[2]])
+
     def store_data(self, source):
-        source_list = [x.get() for x in source]
+        
         
         if self.table == "transactions":
-            database.Transaction(*source_list).add_transaction()
+            print(*source[0])
+            database.Transaction(1, "time", *source[0], "him", "me", "paid").add_transaction()
+            print("yyyyyyyyyyyy")
+            self.show_database_limited()
 
+        
         elif self.table == "items":
+            source_list = [x.get() for x in source]
             database.item(*source_list).add_item()
+            self.show_database()
 
         elif self.table == "customers":
+            source_list = [x.get() for x in source]
             database.customer(*source_list).add_customer()
+            self.show_database()
 
         elif self.table == "employees":
+            source_list = [x.get() for x in source]
             database.employee(*source_list).add_employee()
+            self.show_database()
 
-        self.show_database()
 
     def switcher(self):
         if self.table == "transactions":
@@ -117,9 +133,11 @@ class treeview(object):
        
     def select(self, a):
         curItem = self.data_tree.focus()
+        #print(self.data_tree.item(curItem))
         for i, box in enumerate(self.entry_boxes):
             box.delete(0, tk.END)
             box.insert(0, self.data_tree.item(curItem)["values"][i])
+            
 
 
 ########################################################################
@@ -144,8 +162,8 @@ class cashier(ttk.Frame):
 
         # buttons in the Cashier tab
         
-        add_btn = ttk.Button(self, text = langs[self.tab]["add_btn"][configs["lang"]])#, command = self.search_barcode
-        add_btn.grid(row = 1, column= 10, pady = 10)
+        add_btn = ttk.Button(self, text = langs[self.tab]["add_btn"][configs["lang"]], command=self.add_item)#, command = self.search_barcode
+        add_btn.grid(row = 1, column= 7, pady = 10)
 
         delete_button = ttk.Button(self, text = langs[self.tab]["delete_btn"][configs["lang"]])#, command = self.delete_item
         delete_button.grid(row = 2, column = 9, pady = 10)
@@ -155,7 +173,7 @@ class cashier(ttk.Frame):
 
         # entry boxes in the Cashier tab
         self.barcode_entry = ttk.Entry(self, width = 15)
-        self.barcode_entry.grid(row = 1, column = 9, padx = 10)
+        self.barcode_entry.grid(row = 1, column = 6, padx = 10)
 
         self.total_transaction_var = tk.DoubleVar()
         self.cashin_var = tk.DoubleVar()
@@ -165,18 +183,33 @@ class cashier(ttk.Frame):
         self.cashin = ttk.Entry(self, width = 20, textvariable = self.cashin_var)
         self.cashin.grid(row = 10, column= 7, padx = 10, pady=10)
 
+
+        self.listbox = tk.Listbox(self)
+        self.listbox.grid(row = 10, column =1)
+
         # update the total_transaction entry box
         #self.total_transaction_var.set(self.transaction_total())
 
-        def generate_transaction_id(self):
-            trans_id = 1
-            while database.table().find_record("transactions", "id", trans_id):
-                trans_id += 1
-            return trans_id
+    def generate_transaction_id(self):
+        trans_id = 1
+        while database.table().find_record("transactions", "id", trans_id):
+            trans_id += 1
+        return trans_id
 
-        dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
        
-
+    def add_item(self):
+        # get the barcode number from the entry box
+        barcode = self.barcode_entry.get()
+        # find the item in the database that corresponds to the barcode
+        record = database.table().find_record("items", "bar_code", barcode)
+        # add the item to the data tree
+        # if the barcode is not found, the database.table.find_item function will return an empty list
+        if record:
+            self.data_tree.store_data(record)
+            #self.data_tree.insert(parent='', index='end', text='', values=(record[0][0], record[0][2], 1, record[0][2], barcode))
+        else:
+            self.barcode_not_found_lbl.config(text = langs[self.tab]["invalid_barcode_lbl"][configs["lang"]])
 
 
     """
