@@ -4,6 +4,7 @@
         "add_btn": ["Add Item", "أضف منتج"],
         "delete_btn": ["Delete", "امسح"],
         "cashin_btn": ["Cash In", "النقود المستلمة"],
+        "add_to_credit_btn": ["Add to credit", "أضف إلى حساب العميل"],
         "current_transaction_lbl": ["Current Transaction", "المعاملة الحالية"],
         "total_lbl": ["Total", "المجموع"],
         "cashout_lbl": ["Cash Out: ", " :الراجع للعميل"],

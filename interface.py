@@ -33,7 +33,7 @@ class App(tk.Tk):
         self.notebook = ttk.Notebook()
         self.add_tab()
         self.notebook.grid(row=0)
-        self.notebook.pack(expand = True, fill ="both")
+        #self.notebook.pack(expand = True, fill ="both")
   
 
     def add_tab(self):
@@ -66,7 +66,10 @@ class treeview(object):
     def create_treeview(self):
         columns_headers = [x for x in langs[self.tab]["data_tree_clmns"]]
         # create the treeview with columns from columns_headers
-        self.data_tree = ttk.Treeview(self.parent, columns=columns_headers)
+        treeview_frame = ttk.Frame(self.parent, width=500, height=250)
+        treeview_frame.grid(column=0, row=0, columnspan=5)
+        treeview_frame.grid_propagate(0)
+        self.data_tree = ttk.Treeview(treeview_frame, columns=columns_headers)
         # make use of the the defualt first column and assign it as the id of the row
         self.data_tree.column("#0", width = 50)
         self.data_tree.heading("#0", text = "id")
@@ -77,7 +80,7 @@ class treeview(object):
         
         self.data_tree.bind('<ButtonRelease-1>', self.select)
 
-        self.data_tree.grid(row = 0, column= 0, rowspan = 6, columnspan=6, padx=20, pady=10, sticky="EW")
+        self.data_tree.grid()
 
         self.show_database()
 
@@ -144,81 +147,50 @@ class treeview(object):
 class cashier(ttk.Frame):
     def __init__(self,*args,**kwargs):
         ttk.Frame.__init__(self,*args,**kwargs)
-        self.tab = "tab1"
-        # treeview for the items list
-        self.data_tree = treeview(self, "transactions", "a")
+        self.transaction_status = "paid"
+        self.create_data_tree()
         # Labels in the Cashier tab 
-        #ttk.Label(self, text = langs[self.tab]["current_transaction_lbl"][configs["lang"]]).grid(row = 0, column= 0, columnspan = 8, pady = 20)
-
-        ttk.Label(self, text = langs[self.tab]["total_lbl"][configs["lang"]]).grid(row = 9, column = 6, pady = 20)
-
-        ttk.Label(self, text = langs[self.tab]["cashout_lbl"][configs["lang"]]).grid(row = 11, column = 6, pady = 20)
-
+        ttk.Label(self, text = langs["tab1"]["current_transaction_lbl"][configs["lang"]]).grid(row = 0, column= 0, columnspan = 8, pady = 20)
+        ttk.Label(self, text = langs["tab1"]["total_lbl"][configs["lang"]]).grid(row = 9, column = 6, pady = 20)
+        ttk.Label(self, text = langs["tab1"]["cashout_lbl"][configs["lang"]]).grid(row = 11, column = 6, pady = 20)
         self.barcode_not_found_lbl = ttk.Label(self, text = "")
         self.barcode_not_found_lbl.grid(row = 1, column = 11, pady = 5)
-
         self.cashout_lbl = ttk.Label(self, text = "")
         self.cashout_lbl.grid(row = 11, column = 7, columnspan = 2)
-
         # buttons in the Cashier tab
-        
-        add_btn = ttk.Button(self, text = langs[self.tab]["add_btn"][configs["lang"]], command=self.add_item)#, command = self.search_barcode
-        add_btn.grid(row = 1, column= 7, pady = 10)
-
-        delete_button = ttk.Button(self, text = langs[self.tab]["delete_btn"][configs["lang"]])#, command = self.delete_item
+        add_btn = ttk.Button(self, text = langs["tab1"]["add_btn"][configs["lang"]], command = self.search_barcode)
+        add_btn.grid(row = 1, column= 10, pady = 10)
+        delete_button = ttk.Button(self, text = langs["tab1"]["delete_btn"][configs["lang"]], command = self.delete_item)
         delete_button.grid(row = 2, column = 9, pady = 10)
-
-        cashout_button = ttk.Button(self, text = langs[self.tab]["cashin_btn"][configs["lang"]])#, command = self.cashout
+        cashout_button = ttk.Button(self, text = langs["tab1"]["cashin_btn"][configs["lang"]], command = self.cashout)
         cashout_button.grid(row = 10, column = 6, pady = 10)
-
+        add_to_credit_btn = ttk.Button(self, text = langs["tab1"]["add_to_credit_btn"][configs["lang"]], command = self.change_transaction_status)
+        add_to_credit_btn.grid(row = 10, column = 5, pady = 10)
         # entry boxes in the Cashier tab
         self.barcode_entry = ttk.Entry(self, width = 15)
-        self.barcode_entry.grid(row = 1, column = 6, padx = 10)
-
+        self.barcode_entry.grid(row = 1, column = 9, padx = 10)
         self.total_transaction_var = tk.DoubleVar()
         self.cashin_var = tk.DoubleVar()
         self.total_transaction = ttk.Entry(self, width = 20, textvariable = self.total_transaction_var, state="readonly")
         self.total_transaction.grid(row = 9, column= 7, padx = 10, pady=10)
-
         self.cashin = ttk.Entry(self, width = 20, textvariable = self.cashin_var)
         self.cashin.grid(row = 10, column= 7, padx = 10, pady=10)
-
-
-        self.listbox = tk.Listbox(self)
-        self.listbox.grid(row = 10, column =1)
-
         # update the total_transaction entry box
-        #self.total_transaction_var.set(self.transaction_total())
+        self.total_transaction_var.set(self.transaction_total())
+        #self.show_database()
 
-    def generate_transaction_id(self):
-        trans_id = 1
-        while database.table().find_record("transactions", "id", trans_id):
-            trans_id += 1
-        return trans_id
-
-    dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-       
-    def add_item(self):
-        # get the barcode number from the entry box
-        barcode = self.barcode_entry.get()
-        # find the item in the database that corresponds to the barcode
-        record = database.table().find_record("items", "bar_code", barcode)
-        # add the item to the data tree
-        # if the barcode is not found, the database.table.find_item function will return an empty list
-        if record:
-            self.data_tree.store_data(record)
-            #self.data_tree.insert(parent='', index='end', text='', values=(record[0][0], record[0][2], 1, record[0][2], barcode))
-        else:
-            self.barcode_not_found_lbl.config(text = langs[self.tab]["invalid_barcode_lbl"][configs["lang"]])
+        self.customers_cmbox = ttk.Combobox(self,
+            state="readonly",
+            values=[x[0] for x in database.table().records("customers")]
+        )
+        self.customers_cmbox.current(7)
+        self.customers_cmbox.grid(row = 3, column = 9, padx = 10)
 
 
-    """
     def delete_item(self):
         self.data_tree.delete(self.data_tree.selection()[0]) 
         # update the total_transaction entry box
         self.total_transaction_var.set(self.transaction_total())
-
-
     def search_barcode(self):
         # if the data_tree is empty, then add the item
         if not self.data_tree.get_children():
@@ -242,8 +214,6 @@ class cashier(ttk.Frame):
             # if the search fails to find a matching barcode then add the item to the data_tree
             self.add_item()
         self.total_transaction_var.set(self.transaction_total())
-
-
     def add_item(self):
         # get the barcode number from the entry box
         barcode = self.barcode_entry.get()
@@ -254,29 +224,52 @@ class cashier(ttk.Frame):
         if record:
             self.data_tree.insert(parent='', index='end', text='', values=(record[0][0], record[0][2], 1, record[0][2], barcode))
         else:
-            self.barcode_not_found_lbl.config(text = langs[self.tab]["invalid_barcode_lbl"][configs["lang"]])
-
-
+            self.barcode_not_found_lbl.config(text = langs["tab1"]["invalid_barcode_lbl"][configs["lang"]])
     def transaction_total(self, item=""):
         sum = 0.0
         for row in self.data_tree.get_children(item):
             sum += float(self.data_tree.item(row)['values'][3])
         return sum
-
-
     def cashout(self):
         # triggered by cashout button
         cash = self.cashin_var.get() - self.transaction_total()
         self.cashout_lbl.config(text = str(cash))
 
-
+        self.save_transaction()
     def show_database(self):
         pass
         #self.data_tree.delete(*self.data_tree.get_children())
         #items_list = database.table().records('items')
         #for record in items_list:
             #self.data_tree.insert(parent='', index='end', text='', values=(record[0], record[1], record[2], record[3], record[4], record[5], record[6]))
-    """
+    
+    def generate_transaction_id(self):
+        trans_id = 1
+        while database.table().find_record("transactions", "id", str(trans_id)):
+            trans_id += 1
+        return trans_id
+
+    def change_transaction_status(self):
+        self.transaction_status = "credit"
+        self.save_transaction()
+        self.transaction_status = "paid"
+
+    def save_transaction(self):
+        transaction_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        transaction_id = self.generate_transaction_id()
+        employee_on_shift = configs["employee_on_shift"]
+        customer_name = self.customers_cmbox.get()
+        database.Transaction(transaction_id, transaction_time, 1,2,3,4,5,6, customer_name, employee_on_shift, self.transaction_status).add_transaction()
+
+    def create_data_tree(self):
+        coulmns_headers = [x for x in langs["tab1"]["data_tree_clmns"]]
+        self.data_tree = ttk.Treeview(self, height=10, columns=coulmns_headers)
+        self.data_tree.column("#0", width = 20, stretch=False)
+        self.data_tree.heading("#0", text = "id")
+        for i in coulmns_headers:
+            self.data_tree.column(i, anchor='c', width=90, stretch=False)
+            self.data_tree.heading(i, text=langs["tab1"]["data_tree_clmns"][i][configs["lang"]])
+        self.data_tree.grid(row = 1, column= 0, rowspan = 8, columnspan = 8, padx=20)
 
 ########################################################################
 class items_database(ttk.Frame):

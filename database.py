@@ -66,6 +66,9 @@ class table:
         return self.cursor.fetchall()
 
     def find_record(self, table, parameter, value):
+        #print("table= ", table, "     type=", type(table))
+        #print("parameter= ", parameter, "     type=", type(parameter))
+        #print("value= ", value, "     type=", type(value))
         self.cursor.execute("SELECT * FROM {} WHERE {} = (?)".format(table, parameter), value)
         return self.cursor.fetchall()
 
